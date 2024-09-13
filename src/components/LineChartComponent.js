@@ -1,4 +1,3 @@
-// src/components/charts/LineChartComponent.js
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -11,9 +10,10 @@ const LineChartComponent = () => {
       {
         label: 'Temperature',
         data: [0, 5, 10, 15, 20, 25, 30],
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: true,
+        tension: 0.4,  // Curved lines
       },
     ],
   };
@@ -26,7 +26,7 @@ const LineChartComponent = () => {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.dataset.label}: ${context.raw}`,
+          label: (context) => `${context.dataset.label}: ${context.raw}°C`,
         },
       },
     },
