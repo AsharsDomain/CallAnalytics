@@ -3,22 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@refinedev/core": "^4.54.1",
+    "@refinedev/react-router-v6": "^4.6.0",
+    "chart.js": "^4.4.4",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.2.10",
     "framer-motion": "^11.5.4",
-    "next": "14.2.9",
+    "next": "^14.2.10",
     "react": "^18",
-    "react-dom": "^18"
-  },
-  "devDependencies": {
-    "eslint": "^8",
-    "eslint-config-next": "14.2.9"
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7"
   }
 }
