@@ -8,7 +8,7 @@
 import express from 'express';
 import callRoutes from './src/routes/callRoutes.js';
 import errorHandler  from './src/middlewares/errorhandler.js';
-
+import cors from 'cors';
 const app = express();
 
 app.use(express.json());
@@ -17,7 +17,7 @@ app.use(express.json());
  * Use the call routes.
  */
 app.use('/api', callRoutes);
-
+app.use(cors())
 /**
  * Global error handler middleware.
  * 
