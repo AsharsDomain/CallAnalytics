@@ -1,21 +1,48 @@
-import { Box, Flex, SimpleGrid, Stack, useColorModeValue } from "@chakra-ui/react";
+// src/app/page.js
+"use client"
+import { useState, useEffect } from 'react';
+import { Box, Flex, SimpleGrid, Stack, useColorModeValue, Text } from "@chakra-ui/react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import AnalyticsCard from "../components/AnalyticsCard";
 import BarChartComponent from "@/components/BarChartComponent";
 import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
-
-const mockData = [
-  { title: "Total Users", value: "1,500" },
-  { title: "Total Revenue", value: "$30,000" },
-  { title: "Average Session", value: "15 mins" },
-  { title: "New Signups", value: "200" },
-  { title: "Active Sessions", value: "45" },
-];
+import { fetchCalls } from '@/api';
 
 export default function Home() {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const cardBg = useColorModeValue("white", "gray.700");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchCalls();
+        setData(result);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+
+  // Assuming 'data' is an array of call records and using mock data for demonstration
+  const mockData = [
+    { title: "Total Calls", value: `${data.length}` },
+    { title: "Total Revenue", value: "$30,000" }, // Modify based on actual data
+    { title: "Average Session", value: "15 mins" }, // Modify based on actual data
+    { title: "New Signups", value: "200" }, // Modify based on actual data
+    { title: "Active Sessions", value: "45" }, // Modify based on actual data
+  ];
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column" bg={useColorModeValue("gray.50", "gray.800")}>
