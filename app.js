@@ -12,12 +12,12 @@ import cors from 'cors';
 const app = express();
 
 app.use(express.json());
-
+app.use(cors())
 /**
  * Use the call routes.
  */
 app.use('/api', callRoutes);
-app.use(cors())
+
 /**
  * Global error handler middleware.
  * 
