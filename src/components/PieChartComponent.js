@@ -25,10 +25,18 @@ const PieChartComponent = () => {
       legend: {
         position: 'top',
         labels: {
+          color: '#FF9A00', // Font color for legend text
           font: {
             size: 14,
           },
         },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => `${context.label}: ${context.raw}`, // Customize tooltip label
+        },
+        titleColor: '#FF9A00', // Font color for tooltip title
+        bodyColor: '#FF9A00', // Font color for tooltip body
       },
     },
   };

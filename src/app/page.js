@@ -1,7 +1,6 @@
-// src/app/page.js
-"use client"
-import { useState, useEffect } from 'react';
-import { Box, Flex, SimpleGrid, Stack, useColorModeValue, Text } from "@chakra-ui/react";
+"use client";
+import { useState, useEffect } from "react";
+import { Box, Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/react";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import AnalyticsCard from "../components/AnalyticsCard";
@@ -9,13 +8,17 @@ import BarChartComponent from "@/components/BarChartComponent";
 import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
 import { fetchCalls } from '@/api';
+import { ProductTable } from "@/components/ProductTable"; // Import ProductTable
 
 export default function Home() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const cardBg = useColorModeValue("white", "gray.700");
+  // Dark theme colors
+  const cardBg = "rgba(30, 30, 30, 0.9)";
+  const borderColor = "gray.700";
+  const fontColor = "#FF9A00";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,57 +35,134 @@ export default function Home() {
     fetchData();
   }, []);
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading) return <Text color={fontColor}>Loading...</Text>;
+  if (error) return <Text color={fontColor}>Error: {error.message}</Text>;
 
-  // Assuming 'data' is an array of call records and using mock data for demonstration
-  const mockData = [
-    { title: "Total Calls", value: `${data.length}` },
-    { title: "Total Revenue", value: "$30,000" }, // Modify based on actual data
-    { title: "Average Session", value: "15 mins" }, // Modify based on actual data
-    { title: "New Signups", value: "200" }, // Modify based on actual data
-    { title: "Active Sessions", value: "45" }, // Modify based on actual data
+  // Assuming 'data' has the relevant fields from the API
+  const analyticsData = [
+    { title: "Total Calls", value: data[0]?.caller || "N/A" },
+    { title: "Total Revenue", value: `${data[0]?.callee}` },
+    { title: "Average Session", value: `${data[0]?.call_duration || "N/A"} mins` },
+    { title: "New Signups", value: data[0]?.call_date || "0" },
+    { title: "Active Sessions", value: data.activeSessions || "0" },
+    { title: "Total Call Duration", value: `${data[0]?.total_duration || "N/A"} mins` }
   ];
 
   return (
-    <Box minHeight="100vh" display="flex" flexDirection="column" bg={useColorModeValue("gray.50", "gray.800")}>
+    <Box minHeight="100vh" display="flex" flexDirection="column" bg="black">
       <Header />
       <Flex flex="1">
-        <Sidebar />
-        <Box as="main" flex="1" p={6} display="flex" flexDirection="column" gap={6}>
-          <Stack spacing={6} flex="1">
-            {/* Analytics Cards Container */}
-            <Box border="1px" borderColor="gray.200" p={6} borderRadius="lg" bg={useColorModeValue("white", "gray.700")} shadow="lg">
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                Analytics Overview
-              </h2>
+        {/* Sticky Sidebar */}
+        <Box position="sticky" top="0" h="100vh" zIndex="100">
+          <Sidebar />
+        </Box>
 
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8} mt={4}>
-                {mockData.map((item, index) => (
-                  <AnalyticsCard 
-                    key={index} 
-                    title={item.title} 
-                    value={item.value} 
-                    bg={cardBg} 
-                    shadow="lg" 
-                    borderRadius="lg" 
-                    _hover={{ transform: "scale(1.07)", transition: "all 0.4s ease-in-out" }}
-                  />
-                ))}
-              </SimpleGrid>
-            </Box>
+        <Box as="main" flex="1" p={8} display="flex" flexDirection="column" gap={8}>
+          <Stack spacing={8} flex="1">
+            {/* Main Grid Layout */}
+            <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8}>
+              
+              {/* Left: Analytics Cards Container */}
+              <GridItem
+                height="100%"
+                display="flex"
+                flexDirection="column"
+              >
+                <Box
+                  border="1px"
+                  borderColor={borderColor}
+                  p={8}
+                  borderRadius="lg"
+                  bg={cardBg}
+                  shadow="xl"
+                  flex="1"
+                >
+                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                    Analytics Overview
+                  </Text>
+                  <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
+                    {analyticsData.map((item, index) => (
+                      <AnalyticsCard 
+                        key={index} 
+                        title={item.title} 
+                        value={item.value} 
+                        bg={cardBg} 
+                        color={fontColor} 
+                        borderColor={borderColor}
+                        _hover={{ transform: "scale(1.07)", transition: "all 0.4s ease-in-out" }}
+                      />
+                    ))}
+                  </Grid>
+                </Box>
+              </GridItem>
 
-            {/* Graphs Container */}
-            <Box border="1px" borderColor="gray.200" p={6} borderRadius="lg" bg={useColorModeValue("white", "gray.700")} shadow="lg">
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
-                Graphs Overview
-              </h2>
+              {/* Right: Graph Container with Stretched Height */}
+              <GridItem
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+              >
+                <Box 
+                  border="1px" 
+                  borderColor={borderColor} 
+                  p={8} 
+                  borderRadius="lg" 
+                  bg="gray.900"
+                  shadow="xl"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                    Graph Overview
+                  </Text>
+                  <Stack spacing={8} flex="1">
+                    <LineChartComponent />
+                    <PieChartComponent />
+                  </Stack>
+                </Box>
+              </GridItem>
+            </Grid>
+
+            {/* Additional Graphs Below */}
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+              <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                Detailed Graphs
+              </Text>
               <Stack spacing={8}>
-                <LineChartComponent />
                 <BarChartComponent />
-                <PieChartComponent />
               </Stack>
             </Box>
+
+            {/* Product Table */}
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+              <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                Product Table
+              </Text>
+              <ProductTable />
+            </Box>
+
+            {/* Additional Container for Multiple Content */}
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+              <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                Additional Information
+              </Text>
+              <Stack spacing={8}>
+                {/* Add any content you want to display here, like more cards, text, or tables */}
+                <Box>
+                  <Text color={fontColor} fontWeight="medium">
+                    Example Section 1: Display additional data or charts here.
+                  </Text>
+                </Box>
+                <Box>
+                  <Text color={fontColor} fontWeight="medium">
+                    Example Section 2: Add more relevant information.
+                  </Text>
+                </Box>
+              </Stack>
+            </Box>
+
           </Stack>
         </Box>
       </Flex>

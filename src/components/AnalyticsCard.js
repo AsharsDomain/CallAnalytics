@@ -2,6 +2,7 @@ import { Box, Text, useColorModeValue } from "@chakra-ui/react";
 
 export default function AnalyticsCard({ title, value, bg, shadow, borderRadius, _hover }) {
   const cardBg = bg || useColorModeValue("white", "gray.700");
+  const borderColor = "#9B59B6"; // Purple color
 
   return (
     <Box
@@ -13,12 +14,12 @@ export default function AnalyticsCard({ title, value, bg, shadow, borderRadius, 
       transition="transform 0.3s"
       textAlign="center"
       border="1px solid"
-      borderColor={useColorModeValue("gray.200", "gray.600")}
+      borderColor={borderColor} // Purple border color
     >
-      <Text fontSize="lg" fontWeight="semibold" color="gray.600" mb={2}>
+      <Text fontSize="lg" fontWeight="semibold" color="#FF9A00" mb={2}>
         {title}
       </Text>
-      <Text fontSize="3xl" fontWeight="bold" color="teal.500">
+      <Text fontSize="3xl" fontWeight="bold" color="#FF9A00">
         {value}
       </Text>
     </Box>
