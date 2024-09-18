@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Box, Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import AnalyticsCard from "../components/AnalyticsCard";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import AnalyticsCard from "@/components/AnalyticsCard";
 import BarChartComponent from "@/components/BarChartComponent";
 import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
@@ -41,7 +41,7 @@ export default function Home() {
   // Assuming 'data' has the relevant fields from the API
   const analyticsData = [
     { title: "Total Calls", value: data[0]?.caller || "N/A" },
-    { title: "Total Revenue", value: `${data[0]?.callee}` },
+    { title: "Total Revenue", value: data[0]?.callee || "N/A" },
     { title: "Average Session", value: `${data[0]?.call_duration || "N/A"} mins` },
     { title: "New Signups", value: data[0]?.call_date || "0" },
     { title: "Active Sessions", value: data.activeSessions || "0" },
@@ -119,7 +119,7 @@ export default function Home() {
                   </Text>
                   <Stack spacing={8} flex="1">
                     <LineChartComponent />
-                    <PieChartComponent />
+                    <PieChartComponent callData={data}/>
                   </Stack>
                 </Box>
               </GridItem>
