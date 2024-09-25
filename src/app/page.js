@@ -7,11 +7,12 @@ import AnalyticsCard from "@/components/AnalyticsCard";
 import BarChartComponent from "@/components/BarChartComponent";
 import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
-import { fetchCalls } from '@/api';
-import { ProductTable } from "@/components/ProductTable"; // Import ProductTable
+import { fetchCalls } from "@/api";
+import { ProductTable } from "@/components/ProductTable";
+import CostBreakdown from "@/components/CostBreakdown"; // Import CostBreakdown component
 
 export default function Home() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,16 +41,29 @@ export default function Home() {
 
   // Assuming 'data' has the relevant fields from the API
   const analyticsData = [
-    { title: "Total Calls", value: data[0]?.caller || "N/A" },
-    { title: "Total Revenue", value: data[0]?.callee || "N/A" },
-    { title: "Average Session", value: `${data[0]?.call_duration || "N/A"} mins` },
-    { title: "New Signups", value: data[0]?.call_date || "0" },
-    { title: "Active Sessions", value: data.activeSessions || "0" },
-    { title: "Total Call Duration", value: `${data[0]?.total_duration || "N/A"} mins` }
+    { title: "Total Minutes Used", value: data[0]?.caller || "N/A" },
+    { title: "Total Call Cost", value: data[0]?.callee || "N/A" },
+    { title: "Average Call Duration", value: `${data[0]?.call_duration || "N/A"} mins` },
+    { title: "Call Volume Trends", value: data[0]?.call_date || "0" },
+    { title: "Peak Hour Analysis", value: data[0]?.activeSessions || "0" },
+    { title: "Call Outcome Stats", value: `${data[0]?.total_duration || "N/A"} mins` }
+  ];
+
+  // Sample call data and agent data for the CostBreakdown component
+  const callData = [
+    { id: "call1", cost: 12.34, duration: 15 },
+    { id: "call2", cost: 7.89, duration: 8 },
+    // Add more call data here...
+  ];
+
+  const agentData = [
+    { id: "agent1", totalCost: 20.23, totalDuration: 45, callCount: 3 },
+    { id: "agent2", totalCost: 30.56, totalDuration: 60, callCount: 5 },
+    // Add more agent data here...
   ];
 
   return (
-    <Box minHeight="100vh" display="flex" flexDirection="column" bg="black">
+    <Box maxWidth="100vw" minHeight="100vh" display="flex" flexDirection="column" bg="black">
       <Header />
       <Flex flex="1">
         {/* Sticky Sidebar */}
@@ -63,11 +77,7 @@ export default function Home() {
             <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8}>
               
               {/* Left: Analytics Cards Container */}
-              <GridItem
-                height="100%"
-                display="flex"
-                flexDirection="column"
-              >
+              <GridItem height="100%" display="flex" flexDirection="column">
                 <Box
                   border="1px"
                   borderColor={borderColor}
@@ -97,12 +107,7 @@ export default function Home() {
               </GridItem>
 
               {/* Right: Graph Container with Stretched Height */}
-              <GridItem
-                height="100%"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-              >
+              <GridItem height="100%" display="flex" flexDirection="column" justifyContent="center">
                 <Box 
                   border="1px" 
                   borderColor={borderColor} 
@@ -119,7 +124,7 @@ export default function Home() {
                   </Text>
                   <Stack spacing={8} flex="1">
                     <LineChartComponent />
-                    <PieChartComponent callData={data}/>
+                    <PieChartComponent callData={data} />
                   </Stack>
                 </Box>
               </GridItem>
@@ -135,12 +140,13 @@ export default function Home() {
               </Stack>
             </Box>
 
-            {/* Product Table */}
+            {/* Product Table with Cost Breakdown */}
             <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
-                Product Table
+                Call View Stats
               </Text>
-              <ProductTable />
+              {/* Render CostBreakdown Component */}
+              <CostBreakdown callData={callData} agentData={agentData} />
             </Box>
 
             {/* Additional Container for Multiple Content */}
@@ -162,7 +168,6 @@ export default function Home() {
                 </Box>
               </Stack>
             </Box>
-
           </Stack>
         </Box>
       </Flex>

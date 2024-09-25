@@ -1,25 +1,21 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useEffect, useState } from 'react';
-import callData from "../callData.js"
+import callData from "../callData.js"; // Import the callData
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PieChartComponent = ({ callData }) => {
+const PieChartComponent = () => {
   const [pieData, setPieData] = useState({ labels: [], data: [] });
 
   useEffect(() => {
     if (callData.length > 0) {
-      // Group outcomes by their count
-      const outcomeCounts = groupOutcomes(callData);
-
-      // Prepare the labels and data for the pie chart
-      const labels = Object.keys(outcomeCounts);
-      const data = Object.values(outcomeCounts);
-
+      const outcomeCounts = groupOutcomes(callData); // Group outcomes
+      const labels = Object.keys(outcomeCounts); // Get labels (outcomes)
+      const data = Object.values(outcomeCounts); // Get data (counts)
       setPieData({ labels, data });
     }
-  }, [callData]);
+  }, []);
 
   const data = {
     labels: pieData.labels,
@@ -28,7 +24,7 @@ const PieChartComponent = ({ callData }) => {
         label: 'Call Outcomes',
         data: pieData.data,
         backgroundColor: [
-          '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40',
+          '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf',
         ],
         borderColor: '#fff',
         borderWidth: 2,
@@ -62,10 +58,19 @@ const PieChartComponent = ({ callData }) => {
 };
 
 // Group outcomes by count
+const specificOutcomes = [
+  'voicemails', 
+  'silenced-time-outs', 
+  'pipeline-error-openai-exceeded-quota', 
+  'customer-did-not-give-mic-access', 
+  'pipeline-error-anthropic-401', 
+  'pipeline-error-cartesian'
+];
+
 const groupOutcomes = (data) => {
   return data.reduce((acc, curr) => {
-    acc[curr.outcome] = (acc[curr.outcome] || 0) + 1;
-    console.log(acc);
+    const outcome = specificOutcomes.includes(curr.outcome) ? curr.outcome : 'others';
+    acc[outcome] = (acc[outcome] || 0) + 1;
     return acc;
   }, {});
 };

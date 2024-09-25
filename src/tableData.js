@@ -102,7 +102,7 @@ const data = [
       "call_duration": 20,
       "call_cost": 10.0,
       "outcome": "Missed"
-    },
+    }
   ]
 
   export default data;
