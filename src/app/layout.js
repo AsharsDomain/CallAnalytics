@@ -9,6 +9,8 @@ import Home from "./page";
 import { ProductTable } from "@/components/ProductTable";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import AlertsPage from "@/components/alerts"; // Import AlertsPage
+import CallExpense from "@/components/CallExpense";
+import WhiteLabelingPage from "@/components/WhiteLabelingPage"; // Import WhiteLabelingPage
 
 // Extend the Chakra UI theme to apply a black background to the entire body
 const theme = extendTheme({
@@ -65,12 +67,32 @@ export default function RootLayout() {
                   }
                 />
 
+                {/* Route for Call Expense */}
+                <Route
+                  path="/call-expense"
+                  element={
+                    <AuthGuard>
+                      <CallExpense /> {/* Render the CallExpense component here */}
+                    </AuthGuard>
+                  }
+                />
+
                 {/* Route for the new Analytics Page */}
                 <Route
                   path="/analytics"
                   element={
                     <AuthGuard>
                       <AnalyticsPage /> {/* Render the new AnalyticsPage here */}
+                    </AuthGuard>
+                  }
+                />
+
+                {/* Route for the WhiteLabeling Page */}
+                <Route
+                  path="/whitelabel"
+                  element={
+                    <AuthGuard>
+                      <WhiteLabelingPage /> {/* Render the WhiteLabelingPage component here */}
                     </AuthGuard>
                   }
                 />
