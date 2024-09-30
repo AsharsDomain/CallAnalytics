@@ -1,7 +1,8 @@
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useEffect, useState } from 'react';
-import callData from "../callData.js"; // Import the callData
+import { Box, Text } from '@chakra-ui/react';
+import callData from "../pieData"; // Update import to point to pieData.js
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -54,25 +55,46 @@ const PieChartComponent = () => {
     },
   };
 
-  return <Pie data={data} options={options} />;
+  return (
+    <Box>
+      {/* Pie Chart */}
+      <Box>
+        {pieData.labels.length > 0 ? (
+          <Pie data={data} options={options} />
+        ) : (
+          <Text color="white">No data available</Text>
+        )}
+      </Box>
+    </Box>
+  );
 };
 
-// Group outcomes by count
+// Group outcomes by count and ensure specific order
 const specificOutcomes = [
-  'voicemails', 
-  'silenced-time-outs', 
-  'pipeline-error-openai-exceeded-quota', 
-  'customer-did-not-give-mic-access', 
-  'pipeline-error-anthropic-401', 
-  'pipeline-error-cartesian'
+  'voicemails',
+  'time-outs',
+  'pipeline-error',
+  'no-mic-access',
+  'pipeline-anthropic',
+  'pipeline-cartesian',
+  // Add 'others' for unspecified outcomes
 ];
 
 const groupOutcomes = (data) => {
-  return data.reduce((acc, curr) => {
+  const grouped = data.reduce((acc, curr) => {
     const outcome = specificOutcomes.includes(curr.outcome) ? curr.outcome : 'others';
     acc[outcome] = (acc[outcome] || 0) + 1;
     return acc;
   }, {});
+
+  // Ensure all specific outcomes are included, even if zero count
+  specificOutcomes.forEach(outcome => {
+    if (!grouped[outcome]) {
+      grouped[outcome] = 0; // Assign zero if missing
+    }
+  });
+
+  return grouped;
 };
 
 export default PieChartComponent;

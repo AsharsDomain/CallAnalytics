@@ -1,12 +1,27 @@
-import { Box, Stack, Text, Menu, MenuButton, MenuList, MenuItem, Icon } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-import { AiOutlineDown } from "react-icons/ai"; // Import the dropdown icon
+import {
+  Box,
+  Stack,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Icon,
+} from "@chakra-ui/react";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for routing
 import { MdArrowDropDown } from "react-icons/md";
 
 const Sidebar = () => {
   const fontColor = "#00BFFF"; // Bright blue color for the font
   const hoverColor = "#FF9A00"; // Hover color for font
   const transitionStyle = "all 0.3s ease-in-out"; // Common transition for smooth effects
+  const navigate = useNavigate(); // Initialize useNavigate for programmatic navigation
+
+  const handleRoleSelection = (role) => {
+    if (role === "Admin") {
+      navigate("/admin"); // Navigate to the Admin page when Admin is selected
+    }
+  };
 
   return (
     <Box
@@ -22,7 +37,6 @@ const Sidebar = () => {
       transition="width 0.3s ease-in-out" // Smooth transition for the sidebar's width
     >
       <Stack spacing={6}>
-        {/* Add your sidebar links or components here */}
         <Link to="/whitelabel">
           <Text
             fontSize="lg"
@@ -31,7 +45,7 @@ const Sidebar = () => {
             _hover={{ fontSize: "xl", color: hoverColor }}
             transition={transitionStyle}
           >
-           Customize
+            Customize
           </Text>
         </Link>
 
@@ -86,16 +100,32 @@ const Sidebar = () => {
             transition={transitionStyle}
           >
             Role
-            <Icon as={MdArrowDropDown} ml={2} boxSize={6}  /> {/* Add dropdown icon on the right */}
+            <Icon as={MdArrowDropDown} ml={2} boxSize={6} />{" "}
+            {/* Add dropdown icon on the right */}
           </MenuButton>
           <MenuList bg="black" borderColor={hoverColor}>
-            <MenuItem bg="black" _hover={{ bg: "gray.700" }} color={fontColor}>
+            <MenuItem
+              bg="black"
+              _hover={{ bg: "gray.700" }}
+              color={fontColor}
+              onClick={() => handleRoleSelection("Guest")}
+            >
               Guest
             </MenuItem>
-            <MenuItem bg="black" _hover={{ bg: "gray.700" }} color={fontColor}>
+            <MenuItem
+              bg="black"
+              _hover={{ bg: "gray.700" }}
+              color={fontColor}
+              onClick={() => handleRoleSelection("Admin")} // Navigate to Admin page
+            >
               Admin
             </MenuItem>
-            <MenuItem bg="black" _hover={{ bg: "gray.700" }} color={fontColor}>
+            <MenuItem
+              bg="black"
+              _hover={{ bg: "gray.700" }}
+              color={fontColor}
+              onClick={() => handleRoleSelection("Agency")}
+            >
               Agency
             </MenuItem>
           </MenuList>

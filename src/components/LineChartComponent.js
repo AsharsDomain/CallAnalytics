@@ -1,15 +1,22 @@
+// LineChartComponent.js
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import callData from '@/callData'; // Importing callData from data.js
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const LineChartComponent = () => {
+  // Prepare the data for the chart
+  const labels = callData.map(call => new Date(call.call_date).toLocaleDateString()); // Extracting labels from call dates
+  const dataValues = callData.map(call => call.call_cost); // Extracting call costs for the dataset
+
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: labels,
     datasets: [
       {
-        label: 'Temperature',
-        data: [0, 5, 10, 15, 20, 25, 30],
+        label: 'Call Costs',
+        data: dataValues,
         borderColor: 'rgba(75, 192, 192, 1)', // Line color
         backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
         fill: true,
@@ -29,7 +36,7 @@ const LineChartComponent = () => {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.dataset.label}: ${context.raw}°C`,
+          label: (context) => `${context.dataset.label}: $${context.raw.toFixed(2)}`, // Adjusting label format
         },
         titleColor: '#FF9A00', // Font color for tooltip title
         bodyColor: '#FF9A00', // Font color for tooltip body
@@ -55,7 +62,12 @@ const LineChartComponent = () => {
     },
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <div>
+     {/* Optional Title */}
+      <Line data={data} options={options} />
+    </div>
+  );
 };
 
 export default LineChartComponent;

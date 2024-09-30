@@ -1,17 +1,24 @@
+// BarChartComponent.js
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import callData from '@/callData'; // Import callData from data.js
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const BarChartComponent = () => {
+  // Prepare the data for the chart
+  const labels = callData.map(call => new Date(call.call_date).toLocaleDateString()); // Extracting labels from call dates
+  const dataValues = callData.map(call => call.call_duration); // Extracting call durations for the dataset
+
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: labels,
     datasets: [
       {
-        label: 'Sales',
-        data: [12, 19, 3, 5, 2, 3, 7],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)', // Keep the chart's background color
-        borderColor: 'rgba(54, 162, 235, 1)', // Keep the chart's border color
+        label: 'Call Duration (minutes)', // Updated label for the chart
+        data: dataValues,
+        backgroundColor: 'rgba(54, 162, 235, 0.5)', // Background color for bars
+        borderColor: 'rgba(54, 162, 235, 1)', // Border color for bars
         borderWidth: 2,
       },
     ],
@@ -28,7 +35,7 @@ const BarChartComponent = () => {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.dataset.label}: ${context.raw}`,
+          label: (context) => `${context.dataset.label}: ${context.raw} minutes`, // Display duration in minutes
         },
         titleColor: '#FF9A00', // Font color for tooltip title
         bodyColor: '#FF9A00', // Font color for tooltip body
@@ -40,7 +47,7 @@ const BarChartComponent = () => {
           color: '#FF9A00', // Font color for x-axis labels
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color (adjust if needed)
+          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
         },
       },
       y: {
@@ -48,13 +55,18 @@ const BarChartComponent = () => {
           color: '#FF9A00', // Font color for y-axis labels
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color (adjust if needed)
+          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
         },
       },
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return (
+    <div>
+      {/* Optional Title */}
+      <Bar data={data} options={options} />
+    </div>
+  );
 };
 
 export default BarChartComponent;

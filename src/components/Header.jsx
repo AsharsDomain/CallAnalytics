@@ -1,4 +1,5 @@
-import { Box, Flex, Text, IconButton, Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Box, Flex, Text, IconButton, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"; // Import Image component
 import { Link } from "react-router-dom";
 import { IoNotificationsCircle } from "react-icons/io5";
 import { CiLinkedin } from "react-icons/ci"; // Import LinkedIn icon
@@ -9,6 +10,25 @@ const Header = () => {
   const bgColor = "black";
   const fontFamily = "'Roboto Condensed', sans-serif"; // Font for header
 
+  // State for dynamic heading, logo URL, and social media URLs
+  const [headingText, setHeadingText] = useState("White Labeling Settings");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState(""); // State for Instagram URL
+  const [linkedinUrl, setLinkedinUrl] = useState(""); // State for LinkedIn URL
+
+  // Fetch heading, logo, and social media URLs from localStorage when the component mounts
+  useEffect(() => {
+    const savedHeading = localStorage.getItem("customHeading");
+    const savedLogoUrl = localStorage.getItem("logoUrl");
+    const savedInstagramUrl = localStorage.getItem("instagramUrl");
+    const savedLinkedinUrl = localStorage.getItem("linkedinUrl");
+
+    if (savedHeading) setHeadingText(savedHeading);
+    if (savedLogoUrl) setLogoUrl(savedLogoUrl);
+    if (savedInstagramUrl) setInstagramUrl(savedInstagramUrl);
+    if (savedLinkedinUrl) setLinkedinUrl(savedLinkedinUrl);
+  }, []);
+
   return (
     <Box
       as="header"
@@ -17,32 +37,42 @@ const Header = () => {
       p={4}
       position="relative"
       width="100%"
-      shadow="lg" // Add shadow to make header pop
+      shadow="lg"
     >
       <Flex align="center" justify="space-between">
-        {/* Analytics Dashboard Heading */}
-        <Text
-          fontSize="2xl"
-          fontWeight="bold"
-          color={fontColor}
-          ml={4}
-          fontFamily={fontFamily}
-          _hover={{ color: "#FF9A00", transform: "scale(1.05)" }} // Add color change and scale on hover
-          transition="all 0.3s ease-in-out" // Smooth transition for hover effect
-        >
-          Analytics Dashboard
-        </Text>
+        <Flex align="center">
+          <Text
+            fontSize="2xl"
+            fontWeight="bold"
+            color={fontColor}
+            ml={4}
+            fontFamily={fontFamily}
+            _hover={{ color: "#FF9A00", transform: "scale(1.05)" }}
+            transition="all 0.3s ease-in-out"
+          >
+            {headingText}
+          </Text>
 
-        {/* Navbar Sections */}
+          {logoUrl && (
+            <Image
+              src={logoUrl}
+              alt="Dashboard Logo"
+              boxSize="50px"
+              ml={4}
+              objectFit="contain"
+            />
+          )}
+        </Flex>
+
         <Flex gap={6} align="center">
           <Link to="/login">
             <Text
               fontSize="lg"
               fontWeight="medium"
               color={fontColor}
-              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }} // Scale text and change color on hover
+              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }}
               fontFamily={fontFamily}
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              transition="all 0.3s ease-in-out"
             >
               Home
             </Text>
@@ -52,9 +82,9 @@ const Header = () => {
               fontSize="lg"
               fontWeight="medium"
               color={fontColor}
-              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }} // Scale text and change color on hover
+              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }}
               fontFamily={fontFamily}
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              transition="all 0.3s ease-in-out"
             >
               Analytics
             </Text>
@@ -64,9 +94,9 @@ const Header = () => {
               fontSize="lg"
               fontWeight="medium"
               color={fontColor}
-              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }} // Scale text and change color on hover
+              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }}
               fontFamily={fontFamily}
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              transition="all 0.3s ease-in-out"
             >
               Reports
             </Text>
@@ -76,79 +106,60 @@ const Header = () => {
               fontSize="lg"
               fontWeight="medium"
               color={fontColor}
-              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }} // Scale text and change color on hover
+              _hover={{ color: "#FF9A00", transform: "scale(1.1)" }}
               fontFamily={fontFamily}
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              transition="all 0.3s ease-in-out"
             >
               Alerts
             </Text>
           </Link>
 
-          {/* Notification Bell Icon with Dropdown */}
           <Menu>
             <MenuButton
               as={IconButton}
               icon={<IoNotificationsCircle />}
-              fontSize="2.5rem" // Size for the notification icon
+              fontSize="2.5rem"
               color={fontColor}
               variant="ghost"
               aria-label="Notifications"
-              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }} // Scale icon and change color on hover
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }}
+              transition="all 0.3s ease-in-out"
             />
             <MenuList bg={bgColor} color={fontColor}>
-              {/* Example Notifications */}
-              <MenuItem
-                _hover={{ bg: "gray.700", color: fontColor }}
-                onClick={() => alert("Notification 1 clicked!")}
-              >
+              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 1 clicked!")}>
                 Notification 1
               </MenuItem>
-              <MenuItem
-                _hover={{ bg: "gray.700", color: fontColor }}
-                onClick={() => alert("Notification 2 clicked!")}
-              >
+              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 2 clicked!")}>
                 Notification 2
               </MenuItem>
-              <MenuItem
-                _hover={{ bg: "gray.700", color: fontColor }}
-                onClick={() => alert("Notification 3 clicked!")}
-              >
+              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 3 clicked!")}>
                 Notification 3
               </MenuItem>
             </MenuList>
           </Menu>
 
-          {/* Instagram and LinkedIn Icons */}
-          <a
-            href="https://www.instagram.com/synthiqio/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          {/* Updated Instagram and LinkedIn Icons */}
+          <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
             <IconButton
               icon={<FaInstagram />}
-              fontSize="2rem" // Adjusted size for Instagram icon
+              fontSize="2rem"
               color={fontColor}
               variant="ghost"
               aria-label="Instagram"
-              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }} // Scale and change color on hover
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }}
+              transition="all 0.3s ease-in-out"
             />
           </a>
 
-          <a
-            href="https://www.linkedin.com/company/synthiq/posts/?feedView=all"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">
             <IconButton
               icon={<CiLinkedin />}
-              fontSize="2rem" // Adjusted size for LinkedIn icon
+              fontSize="2rem"
               color={fontColor}
               variant="ghost"
               aria-label="LinkedIn"
-              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }} // Scale and change color on hover
-              transition="all 0.3s ease-in-out" // Smooth transition for hover effect
+              _hover={{ color: "#FF9A00", transform: "scale(1.2)" }}
+              transition="all 0.3s ease-in-out"
             />
           </a>
         </Flex>

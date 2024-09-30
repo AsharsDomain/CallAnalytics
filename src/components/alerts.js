@@ -15,6 +15,7 @@ import {
   Input,
   Switch,
   IconButton,
+  TableContainer,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -30,7 +31,7 @@ export default function AlertsPage() {
   const [editingIndex, setEditingIndex] = useState(null);
 
   // Dark theme colors
-  const cardBg = "rgba(30, 30, 30, 0.9)";
+  const cardBg = "rgba(0, 0, 0, 0.9)";
   const borderColor = "gray.700";
   const fontColor = "#FF9A00";
 
@@ -79,12 +80,14 @@ export default function AlertsPage() {
                   placeholder="Alert Name"
                   value={newAlert.name}
                   onChange={(e) => setNewAlert({ ...newAlert, name: e.target.value })}
+                  bg="gray.700"
                   color={fontColor}
                 />
                 <Input
                   placeholder="Threshold"
                   value={newAlert.threshold}
                   onChange={(e) => setNewAlert({ ...newAlert, threshold: e.target.value })}
+                  bg="gray.700"
                   color={fontColor}
                 />
                 <Flex alignItems="center" color={fontColor}>
@@ -100,37 +103,40 @@ export default function AlertsPage() {
               </Stack>
 
               {/* Display the alerts in a table */}
-              <Table variant="simple" size="md" color={fontColor}>
-                <Thead>
-                  <Tr>
-                    <Th color={fontColor}>Name</Th>
-                    <Th color={fontColor}>Threshold</Th>
-                    <Th color={fontColor}>Active</Th>
-                    <Th color={fontColor}>Actions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {alerts.map((alert, index) => (
-                    <Tr key={index}>
-                      <Td>{alert.name}</Td>
-                      <Td>{alert.threshold}</Td>
-                      <Td>{alert.active ? "Yes" : "No"}</Td>
-                      <Td>
-                        <IconButton
-                          icon={<CiEdit />}
-                          onClick={() => handleEditAlert(index)}
-                          mr={2}
-                        />
-                        <IconButton
-                          icon={<MdDelete />}
-                          onClick={() => handleDeleteAlert(index)}
-                          colorScheme="red"
-                        />
-                      </Td>
+              <TableContainer>
+                <Table variant="striped" size="md" colorScheme="blackAlpha" bg="rgba(0,0,0,0.9)">
+                  <Thead>
+                    <Tr>
+                      <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Name</Th>
+                      <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Threshold</Th>
+                      <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Active</Th>
+                      <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Actions</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
+                  </Thead>
+                  <Tbody>
+                    {alerts.map((alert, index) => (
+                      <Tr key={index} _hover={{ bg: "blackAlpha.700" }}>
+                        <Td color={fontColor}>{alert.name}</Td>
+                        <Td color={fontColor}>{alert.threshold}</Td>
+                        <Td color={fontColor}>{alert.active ? "Yes" : "No"}</Td>
+                        <Td>
+                          <IconButton
+                            icon={<CiEdit />}
+                            onClick={() => handleEditAlert(index)}
+                            mr={2}
+                            colorScheme="yellow"
+                          />
+                          <IconButton
+                            icon={<MdDelete />}
+                            onClick={() => handleDeleteAlert(index)}
+                            colorScheme="red"
+                          />
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
             </Box>
           </Stack>
         </Box>

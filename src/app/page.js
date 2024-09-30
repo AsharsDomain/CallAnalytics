@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useState, useEffect } from "react";
 import { Box, Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/react";
 import Header from "@/components/Header";
@@ -8,13 +8,15 @@ import BarChartComponent from "@/components/BarChartComponent";
 import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
 import { fetchCalls } from "@/api";
-import { ProductTable } from "@/components/ProductTable";
 import CostBreakdown from "@/components/CostBreakdown"; // Import CostBreakdown component
 
 export default function Home() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [primaryColor, setPrimaryColor] = useState(() => {
+    return localStorage.getItem('primaryColor') || '#00BFFF'; // Default color
+  });
 
   // Dark theme colors
   const cardBg = "rgba(30, 30, 30, 0.9)";
@@ -77,15 +79,16 @@ export default function Home() {
             <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8}>
               
               {/* Left: Analytics Cards Container */}
-              <GridItem height="100%" display="flex" flexDirection="column">
+              <GridItem height="100%" display="flex" flexDirection="column" flexGrow={4}>
                 <Box
                   border="1px"
                   borderColor={borderColor}
                   p={8}
                   borderRadius="lg"
-                  bg={cardBg}
+                  bg={primaryColor} // Set background to primary color
                   shadow="xl"
                   flex="1"
+                  height="100%" // Ensure the container grows to fill the height
                 >
                   <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
                     Analytics Overview
@@ -107,15 +110,16 @@ export default function Home() {
               </GridItem>
 
               {/* Right: Graph Container with Stretched Height */}
-              <GridItem height="100%" display="flex" flexDirection="column" justifyContent="center">
+              <GridItem height="100%" display="flex" flexDirection="column" flexGrow={4}>
                 <Box 
                   border="1px" 
                   borderColor={borderColor} 
                   p={8} 
                   borderRadius="lg" 
-                  bg="gray.900"
+                  bg={primaryColor} // Set background to primary color
                   shadow="xl"
-                  height="100%"
+                  flex="1"
+                  height="100%" // Ensure this container grows to match the height of the left container
                   display="flex"
                   flexDirection="column"
                 >
@@ -131,7 +135,7 @@ export default function Home() {
             </Grid>
 
             {/* Additional Graphs Below */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
                 Detailed Graphs
               </Text>
@@ -141,7 +145,7 @@ export default function Home() {
             </Box>
 
             {/* Product Table with Cost Breakdown */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
                 Call View Stats
               </Text>
@@ -150,7 +154,7 @@ export default function Home() {
             </Box>
 
             {/* Additional Container for Multiple Content */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="gray.900" shadow="xl">
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
                 Additional Information
               </Text>

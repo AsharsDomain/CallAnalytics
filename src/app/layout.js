@@ -4,13 +4,18 @@ import { Refine } from "@refinedev/core";
 import routerProvider from "@refinedev/react-router-v6";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthGuard from "@/components/AuthGuard";
+import RoleGuard from "@/components/RoleGuard"; // Optionally add RoleGuard for admin-specific routes
 import LoginPage from "./LoginPage/LoginPage";
 import Home from "./page";
 import { ProductTable } from "@/components/ProductTable";
 import AnalyticsPage from "@/pages/AnalyticsPage";
-import AlertsPage from "@/components/alerts"; // Import AlertsPage
+import AlertsPage from "@/components/alerts";
 import CallExpense from "@/components/CallExpense";
-import WhiteLabelingPage from "@/components/WhiteLabelingPage"; // Import WhiteLabelingPage
+import WhiteLabelingPage from "@/components/WhiteLabelingPage";
+import AdminPage from "@/components/AdminPage"; // Import AdminPage
+import CallDetails from "@/components/CallDetails";
+import SettingsPage from "@/components/SettingsPage";
+import MainComponent from "@/components/MainComponent";
 
 // Extend the Chakra UI theme to apply a black background to the entire body
 const theme = extendTheme({
@@ -43,6 +48,26 @@ export default function RootLayout() {
                   element={
                     <AuthGuard>
                       <Home /> {/* Render the dashboard page here */}
+                    </AuthGuard>
+                  }
+                />
+
+                 {/* Route for viewing call details */}
+                 <Route
+                  path="/call/:id"
+                  element={
+                    <AuthGuard>
+                      <CallDetails /> {/* Render the CallDetails component here */}
+                    </AuthGuard>
+                  }
+                />
+
+                 {/* Route for the Settings Page */}
+                 <Route
+                  path="/settings"
+                  element={
+                    <AuthGuard>
+                      <MainComponent /> {/* Render the SettingsPage component here */}
                     </AuthGuard>
                   }
                 />
@@ -93,6 +118,18 @@ export default function RootLayout() {
                   element={
                     <AuthGuard>
                       <WhiteLabelingPage /> {/* Render the WhiteLabelingPage component here */}
+                    </AuthGuard>
+                  }
+                />
+
+                {/* Admin route protected by RoleGuard for admin users */}
+                <Route
+                  path="/admin"
+                  element={
+                    <AuthGuard>
+                      <RoleGuard allowedRoles={['Admin']}>
+                        <AdminPage /> {/* Render the AdminPage here */}
+                      </RoleGuard>
                     </AuthGuard>
                   }
                 />

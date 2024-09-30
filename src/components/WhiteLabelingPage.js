@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -13,27 +13,37 @@ import {
   Alert,
   Flex,
 } from '@chakra-ui/react';
-import Sidebar from './Sidebar'; // Import the Sidebar component
-import Header from './Header'; // Import the Header component
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 const WhiteLabelingPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [logoUrl, setLogoUrl] = useState('');
-  const [primaryColor, setPrimaryColor] = useState('#00BFFF'); // Default color
-  const [layout, setLayout] = useState('default'); // Default layout
-  const [headingText, setHeadingText] = useState('White Labeling Settings'); // State for customizable heading
+  const [primaryColor, setPrimaryColor] = useState('#00BFFF');
+  const [layout, setLayout] = useState('default');
+  const [headingText, setHeadingText] = useState(() => {
+    return localStorage.getItem('customHeading') || 'White Labeling Settings';
+  });
+  const [customUrl, setCustomUrl] = useState(() => {
+    // Load saved custom URL from localStorage
+    return localStorage.getItem('customUrl') || '';
+  });
   const [successMessage, setSuccessMessage] = useState('');
 
   const handleSave = () => {
-    // Logic to save the customization settings (e.g., API call)
+    // Save settings to localStorage
+    localStorage.setItem('customHeading', headingText);
+    localStorage.setItem('logoUrl', logoUrl);
+    localStorage.setItem('customUrl', customUrl);
+    localStorage.setItem('primaryColor', primaryColor);
     setSuccessMessage('Customization settings saved successfully!');
   };
 
   return (
     <ColorModeProvider>
       <Flex direction="column" height="100vh">
-        {/* Header Component */}
-        <Header />
+        {/* Header Component with headingText prop */}
+        <Header headingText={headingText} />
 
         <Flex flex="1">
           {/* Sidebar Component */}
@@ -42,8 +52,8 @@ const WhiteLabelingPage = () => {
           {/* Main Content Area */}
           <Box flex="1" p={5}>
             <VStack spacing={4} w="100%" maxW="md" mx="auto" mt={10}>
-              {/* Single Main Heading */}
-              <Heading>{headingText}</Heading>
+              {/* Main Heading */}
+              <Heading>White Labeling Settings</Heading>
 
               {/* Customizable Heading Input */}
               <FormControl id="headingText">
@@ -58,6 +68,7 @@ const WhiteLabelingPage = () => {
 
               {successMessage && <Alert status="success">{successMessage}</Alert>}
 
+              {/* Dashboard Logo URL Input */}
               <FormControl id="logoUrl">
                 <FormLabel>Dashboard Logo URL</FormLabel>
                 <Input
@@ -68,6 +79,18 @@ const WhiteLabelingPage = () => {
                 />
               </FormControl>
 
+              {/* Custom URL Input */}
+              <FormControl id="customUrl">
+                <FormLabel>Custom Website Address</FormLabel>
+                <Input
+                  type="text"
+                  value={customUrl}
+                  onChange={(e) => setCustomUrl(e.target.value)}
+                  placeholder="Enter custom website address"
+                />
+              </FormControl>
+
+              {/* Primary Color Input */}
               <FormControl id="primaryColor">
                 <FormLabel>Primary Color</FormLabel>
                 <Input
@@ -77,17 +100,7 @@ const WhiteLabelingPage = () => {
                 />
               </FormControl>
 
-              <FormControl id="layout">
-                <FormLabel>Layout Preference</FormLabel>
-                <Select
-                  value={layout}
-                  onChange={(e) => setLayout(e.target.value)}
-                >
-                  <option value="default">Default</option>
-                  <option value="compact">Compact</option>
-                  <option value="expanded">Expanded</option>
-                </Select>
-              </FormControl>
+              
 
               <Button colorScheme="blue" onClick={handleSave}>
                 Save Customizations
