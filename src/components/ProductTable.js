@@ -72,35 +72,35 @@ export const ProductTable = () => {
       borderColor="black" // Black border color
       p={8}
       borderRadius="lg"
-      bg="rgba(0,0,0,0.9)"
+      bg="black"
       shadow="xl"
     >
       <HStack spacing={4} mb={4}>
-        <Select placeholder="Filter by time" onChange={(e) => setTimeFilter(e.target.value)} color="orange.400">
+        <Select placeholder="Filter by time" onChange={(e) => setTimeFilter(e.target.value)} color="#1662D4">
           <option value="">All</option>
           <option value="morning">Morning</option>
           <option value="afternoon">Afternoon</option>
           <option value="evening">Evening</option>
         </Select>
-        <Select placeholder="Sort by" onChange={(e) => setSortBy(e.target.value)} color="orange.400">
+        <Select placeholder="Sort by" onChange={(e) => setSortBy(e.target.value)} color="#1662D4">
           <option value="call_date">Date</option>
           <option value="call_duration">Duration</option>
           <option value="call_cost">Cost</option>
           <option value="outcome">Outcome</option>
         </Select>
-        <Select placeholder="Sort order" onChange={(e) => setSortOrder(e.target.value)} color="orange.400">
+        <Select placeholder="Sort order" onChange={(e) => setSortOrder(e.target.value)} color="#1662D4">
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </Select>
       </HStack>
 
       <HStack spacing={4} mb={4}>
-        <Button onClick={handleExportCSV} colorScheme="orange">Export CSV</Button>
-        <Button onClick={handleExportExcel} colorScheme="orange">Export Excel</Button>
+        <Button onClick={handleExportCSV} colorScheme="blue">Export CSV</Button>
+        <Button onClick={handleExportExcel} colorScheme="blue">Export Excel</Button>
       </HStack>
 
       <TableContainer>
-        <Table variant="striped" colorScheme="blackAlpha" size="md" border="1px" borderColor="black" bg="rgba(0,0,0,0.9)" color="#FF9A00">
+        <Table variant="striped" colorScheme="blackAlpha" size="md" border="1px" borderColor="black" bg="black" color="white">
           <Thead>
             <Tr>
               <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Call ID</Th>
@@ -119,14 +119,14 @@ export const ProductTable = () => {
                 _hover={{ bg: "blackAlpha.700" }}
                 transition="0.2s ease-out"
               >
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_id}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.call_date).toLocaleDateString()}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.call_date).toLocaleTimeString()}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_duration || "add"}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_cost || "N/A"}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.outcome || "N/A"}</Td>
-                <Td color="#FF9A00" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">
-                  <Button colorScheme="orange" onClick={() => handleViewDetails(call.call_id)}>View Details</Button>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_id}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.call_date).toLocaleDateString()}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.call_date).toLocaleTimeString()}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_duration || "add"}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.call_cost || "N/A"}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.outcome || "N/A"}</Td>
+                <Td color="white" fontSize="lg" _hover={{ color: "blue.500" }} transition="color 0.2s">
+                  <Button colorScheme="blue" onClick={() => handleViewDetails(call.call_id)}>View Details</Button>
                 </Td>
               </Tr>
             ))}

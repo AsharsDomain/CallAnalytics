@@ -28,10 +28,13 @@ import Sidebar from "@/components/Sidebar"; // Adjust the import path as needed
 const AdminPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [roleFilter, setRoleFilter] = useState(""); // State for role filter
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [userList, setUserList] = useState([
     { id: 1, name: "John Doe", email: "john.doe@example.com", role: "Admin" },
     { id: 2, name: "Jane Smith", email: "jane.smith@example.com", role: "User" },
+    // Add more users as needed
   ]);
   const [newUser, setNewUser] = useState({ name: "", email: "", role: "User" }); // State for new user
   const [isAddUserOpen, setIsAddUserOpen] = useState(false); // State for adding user modal
@@ -46,6 +49,17 @@ const AdminPage = () => {
 
   // Function to simulate an API call for updating the role
   const updateUserRole = (userId, newRole) => {
+    if (newRole === "") {
+      toast({
+        title: "No Role Selected",
+        description: "Please select a role before updating.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setTimeout(() => {
       setUserList((prevUserList) =>
         prevUserList.map((user) =>
@@ -63,11 +77,6 @@ const AdminPage = () => {
     }, 1000); // Simulate a delay
   };
 
-  // Function to save the role
-  const handleSaveRole = () => {
-    updateUserRole(currentUser.id, selectedRole);
-  };
-
   // Function to open the add user modal
   const handleAddUserOpen = () => {
     setNewUser({ name: "", email: "", role: "User" }); // Reset new user data
@@ -77,6 +86,18 @@ const AdminPage = () => {
   // Function to add a new user
   const handleAddUser = () => {
     if (newUser.name && newUser.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newUser.email)) {
+        toast({
+          title: `Invalid Email`,
+          description: `Please enter a valid email address.`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+
       const newUserData = {
         id: userList.length + 1, // Assign a new ID
         ...newUser,
@@ -105,6 +126,27 @@ const AdminPage = () => {
     }
   };
 
+  // Function to remove a user
+  const handleRemoveUser = (userId) => {
+    setUserList((prevUserList) => prevUserList.filter((user) => user.id !== userId));
+    toast({
+      title: `User Removed`,
+      description: `User has been removed successfully.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  // Filter users based on the search term and selected role
+  const filteredUsers = userList.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = roleFilter ? user.role === roleFilter : true; // Check role filter
+    return matchesSearch && matchesRole;
+  });
+
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column" bg="rgba(0,0,0,0.9)">
       <Header /> {/* Header on top */}
@@ -126,24 +168,88 @@ const AdminPage = () => {
           </Box>
 
           {/* User Management Section */}
-          <Box bg="rgba(0,0,0,0.9)" p={6} borderRadius="lg" shadow="xl" border="1px" borderColor="black">
-            <Text fontSize="xl" fontWeight="bold" color="#FF9A00">
+          <Box
+            bg="rgba(0,0,0,0.9)"
+            p={6}
+            borderRadius="lg"
+            shadow="xl"
+            border="1px"
+            borderColor="black"
+          >
+            <Text fontSize="xl" fontWeight="bold" color="#FF9A00" mb={4}>
               User Management
             </Text>
+            {/* Search Input */}
+            <Input
+              placeholder="Search users by name or email"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
+              mb={4}
+              color="white"
+              bg="blackAlpha.600"
+              _placeholder={{ color: "gray.400" }}
+            />
+            {/* Role Filter Select */}
+            <Select
+              placeholder="Filter by Role"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)} // Update role filter on selection
+              mb={4}
+              color="white"
+              bg="black"
+              borderColor="gray.600"
+              _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+            >
+              <option value="User" style={{ backgroundColor: "black", color: "white" }}>
+                User
+              </option>
+              <option value="Admin" style={{ backgroundColor: "black", color: "white" }}>
+                Admin
+              </option>
+              <option
+                value="Super Admin"
+                style={{ backgroundColor: "black", color: "white" }}
+              >
+                Super Admin
+              </option>
+              <option
+                value="Agency Owner"
+                style={{ backgroundColor: "black", color: "white" }}
+              >
+                Agency Owner
+              </option>
+            </Select>
+            {/* Add User Button */}
             <Button colorScheme="green" onClick={handleAddUserOpen} mb={4}>
               Add New User
             </Button>
-            <Table mt={4} variant="striped" colorScheme="blackAlpha" border="1px" borderColor="black" size="md">
+            {/* Users Table */}
+            <Table
+              mt={4}
+              variant="striped"
+              colorScheme="blackAlpha"
+              border="1px"
+              borderColor="black"
+              size="md"
+            >
               <Thead>
                 <Tr>
-                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Username</Th>
-                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Email</Th>
-                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Role</Th>
-                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">Actions</Th>
+                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">
+                    Username
+                  </Th>
+                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">
+                    Email
+                  </Th>
+                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">
+                    Role
+                  </Th>
+                  <Th color="rgba(255,255,255,0.9)" fontWeight="bold">
+                    Actions
+                  </Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {userList.map((user) => (
+                {filteredUsers.map((user) => (
                   <Tr
                     key={user.id}
                     _hover={{ bg: "blackAlpha.700" }} // Black hover state for row
@@ -153,33 +259,33 @@ const AdminPage = () => {
                       fontSize="lg"
                       color="#FF9A00"
                       _hover={{ color: "blue.500" }} // Blue color when hovered
-                      transition="color 0.2s"
+                      transition="0.3s ease-out"
                     >
                       {user.name}
                     </Td>
-                    <Td
-                      fontSize="lg"
-                      color="#FF9A00"
-                      _hover={{ color: "blue.500" }} // Blue color when hovered
-                      transition="color 0.2s"
-                    >
+                    <Td color="white" fontSize="lg">
                       {user.email}
                     </Td>
-                    <Td
-                      fontSize="lg"
-                      color="#FF9A00"
-                      _hover={{ color: "blue.500" }} // Blue color when hovered
-                      transition="color 0.2s"
-                    >
+                    <Td color="white" fontSize="lg">
                       {user.role}
                     </Td>
                     <Td>
-                      <Button size="sm" colorScheme="yellow" onClick={() => handleEdit(user)}>
-                        Edit
-                      </Button>
-                      <Button size="sm" colorScheme="red" ml={2}>
-                        Remove
-                      </Button>
+                      <Flex gap={2}>
+                        <Button
+                          colorScheme="yellow"
+                          size="sm"
+                          onClick={() => handleEdit(user)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          size="sm"
+                          onClick={() => handleRemoveUser(user.id)}
+                        >
+                          Remove
+                        </Button>
+                      </Flex>
                     </Td>
                   </Tr>
                 ))}
@@ -187,78 +293,121 @@ const AdminPage = () => {
             </Table>
           </Box>
 
-          {/* Modal for Editing User Role */}
+          {/* Edit User Modal */}
           {currentUser && (
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
-              <ModalContent bg="rgba(0,0,0,0.9)" color="#FF9A00">
-                <ModalHeader fontWeight="bold">Edit Role for {currentUser.name}</ModalHeader>
+              <ModalContent bg="blackAlpha.800" borderRadius="xl" color="white">
+                <ModalHeader>Edit Role for {currentUser.name}</ModalHeader>
                 <ModalBody>
                   <Select
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
-                    color="black"
-                    bg="white"
+                    mb={4}
+                    borderColor="whiteAlpha.700"
+                    bg="black"
+                    color="white"
+                    _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
-                    <option value="Moderator">Moderator</option>
+                    <option value="User" style={{ backgroundColor: "black", color: "white" }}>
+                      User
+                    </option>
+                    <option value="Admin" style={{ backgroundColor: "black", color: "white" }}>
+                      Admin
+                    </option>
+                    <option
+                      value="Super Admin"
+                      style={{ backgroundColor: "black", color: "white" }}
+                    >
+                      Super Admin
+                    </option>
+                    <option
+                      value="Agency Owner"
+                      style={{ backgroundColor: "black", color: "white" }}
+                    >
+                      Agency Owner
+                    </option>
                   </Select>
                 </ModalBody>
-
                 <ModalFooter>
-                  <Button colorScheme="blue" mr={3} onClick={handleSaveRole}>
+                  <Button variant="ghost" mr={3} onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="green"
+                    onClick={() => updateUserRole(currentUser.id, selectedRole)}
+                  >
                     Save
                   </Button>
-                  <Button onClick={onClose}>Cancel</Button>
                 </ModalFooter>
               </ModalContent>
             </Modal>
           )}
 
-          {/* Modal for Adding New User */}
-          <Modal isOpen={isAddUserOpen} onClose={() => setIsAddUserOpen(false)}>
-            <ModalOverlay />
-            <ModalContent bg="rgba(0,0,0,0.9)" color="#FF9A00">
-              <ModalHeader fontWeight="bold">Add New User</ModalHeader>
-              <ModalBody>
-                <Input
-                  placeholder="Username"
-                  mb={3}
-                  value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                  color="white"
-                  bg="gray.700"
-                />
-                <Input
-                  placeholder="Email"
-                  mb={3}
-                  value={newUser.email}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  color="white"
-                  bg="gray.700"
-                />
-                <Select
-                  value={newUser.role}
-                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                  color="black"
-                  bg="white"
-                  mb={3}
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                  <option value="Moderator">Moderator</option>
-                </Select>
-              </ModalBody>
-
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleAddUser}>
-                  Add User
-                </Button>
-                <Button onClick={() => setIsAddUserOpen(false)}>Cancel</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          {/* Add User Modal */}
+          {isAddUserOpen && (
+            <Modal isOpen={isAddUserOpen} onClose={() => setIsAddUserOpen(false)}>
+              <ModalOverlay />
+              <ModalContent bg="blackAlpha.800" borderRadius="xl" color="white">
+                <ModalHeader>Add New User</ModalHeader>
+                <ModalBody>
+                  <Input
+                    placeholder="Enter name"
+                    value={newUser.name}
+                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                    mb={4}
+                    color="white"
+                    bg="blackAlpha.600"
+                    _placeholder={{ color: "gray.400" }}
+                  />
+                  <Input
+                    placeholder="Enter email"
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    mb={4}
+                    color="white"
+                    bg="blackAlpha.600"
+                    _placeholder={{ color: "gray.400" }}
+                  />
+                  <Select
+                    value={newUser.role}
+                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                    borderColor="whiteAlpha.700"
+                    bg="black"
+                    color="white"
+                    _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+                  >
+                    <option value="User" style={{ backgroundColor: "black", color: "white" }}>
+                      User
+                    </option>
+                    <option value="Admin" style={{ backgroundColor: "black", color: "white" }}>
+                      Admin
+                    </option>
+                    <option
+                      value="Super Admin"
+                      style={{ backgroundColor: "black", color: "white" }}
+                    >
+                      Super Admin
+                    </option>
+                    <option
+                      value="Agency Owner"
+                      style={{ backgroundColor: "black", color: "white" }}
+                    >
+                      Agency Owner
+                    </option>
+                  </Select>
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="ghost" mr={3} onClick={() => setIsAddUserOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="green" onClick={handleAddUser}>
+                    Add User
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
         </Box>
       </Flex>
     </Box>

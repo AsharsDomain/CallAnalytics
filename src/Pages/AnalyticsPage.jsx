@@ -8,9 +8,9 @@ import { ProductTable } from "@/components/ProductTable"; // Assuming this is yo
 
 export default function AnalyticsPage() {
   // Dark theme colors
-  const cardBg = "rgba(30, 30, 30, 0.9)";
+  const cardBg = "black";
   const borderColor = "gray.700";
-  const fontColor = "#FF9A00";
+  const fontColor = "white";
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column" bg="black">
@@ -30,8 +30,8 @@ export default function AnalyticsPage() {
               borderColor={borderColor} 
               p={8} 
               borderRadius="lg" 
-              bg="gray.900" 
-              shadow="xl" 
+              bg="black" 
+              shadow={"0px 4px 12px rgba(0, 0, 139, 0.8)"} 
               height="100%"
             >
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>

@@ -1,20 +1,34 @@
 import { useState, useEffect } from "react";
-import { Box, Flex, Text, IconButton, Menu, MenuButton, MenuList, MenuItem, Image } from "@chakra-ui/react"; // Import Image component
+import {
+  Box,
+  Flex,
+  Text,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Image,
+  Avatar,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { IoNotificationsCircle } from "react-icons/io5";
-import { CiLinkedin } from "react-icons/ci"; // Import LinkedIn icon
-import { FaInstagram } from "react-icons/fa"; // Import Instagram icon
+import { CiLinkedin } from "react-icons/ci";
+import { FaInstagram } from "react-icons/fa";
+import { FiUser } from "react-icons/fi";
+import { FaRegUser } from "react-icons/fa";
 
 const Header = () => {
-  const fontColor = "#00BFFF"; // Bright blue color
+  const fontColor = "#1662D4"; // Bright blue color
   const bgColor = "black";
-  const fontFamily = "'Roboto Condensed', sans-serif"; // Font for header
+  const fontFamily = "'Roboto Condensed', sans-serif";
 
   // State for dynamic heading, logo URL, and social media URLs
   const [headingText, setHeadingText] = useState("White Labeling Settings");
   const [logoUrl, setLogoUrl] = useState("");
-  const [instagramUrl, setInstagramUrl] = useState(""); // State for Instagram URL
-  const [linkedinUrl, setLinkedinUrl] = useState(""); // State for LinkedIn URL
+  const [instagramUrl, setInstagramUrl] = useState(""); 
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [isHovered, setIsHovered] = useState(false); // State to track hover
 
   // Fetch heading, logo, and social media URLs from localStorage when the component mounts
   useEffect(() => {
@@ -28,6 +42,12 @@ const Header = () => {
     if (savedInstagramUrl) setInstagramUrl(savedInstagramUrl);
     if (savedLinkedinUrl) setLinkedinUrl(savedLinkedinUrl);
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    alert("You have logged out!");
+    // Implement actual logout logic here
+  };
 
   return (
     <Box
@@ -114,6 +134,7 @@ const Header = () => {
             </Text>
           </Link>
 
+          {/* Notifications Menu */}
           <Menu>
             <MenuButton
               as={IconButton}
@@ -126,20 +147,19 @@ const Header = () => {
               transition="all 0.3s ease-in-out"
             />
             <MenuList bg={bgColor} color={fontColor}>
-              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 1 clicked!")}>
+              <MenuItem _hover={{ bg: "gray.700" }} onClick={() => alert("Notification 1 clicked!")}>
                 Notification 1
               </MenuItem>
-              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 2 clicked!")}>
+              <MenuItem _hover={{ bg: "gray.700" }} onClick={() => alert("Notification 2 clicked!")}>
                 Notification 2
               </MenuItem>
-              <MenuItem _hover={{ bg: "gray.700", color: fontColor }} onClick={() => alert("Notification 3 clicked!")}>
+              <MenuItem _hover={{ bg: "gray.700" }} onClick={() => alert("Notification 3 clicked!")}>
                 Notification 3
               </MenuItem>
             </MenuList>
           </Menu>
 
-          {/* Updated Instagram and LinkedIn Icons */}
-          <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+          {/* <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
             <IconButton
               icon={<FaInstagram />}
               fontSize="2rem"
@@ -151,6 +171,7 @@ const Header = () => {
             />
           </a>
 
+          
           <a href={linkedinUrl} target="_blank" rel="noopener noreferrer">
             <IconButton
               icon={<CiLinkedin />}
@@ -161,7 +182,44 @@ const Header = () => {
               _hover={{ color: "#FF9A00", transform: "scale(1.2)" }}
               transition="all 0.3s ease-in-out"
             />
-          </a>
+          </a> */}
+
+          {/* Profile Menu */}
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={
+                <Avatar
+                  bg={isHovered ? "orange" : "#1662D4"} // Change background color based on hover state
+                  color="black"
+                  icon={<FaRegUser />}
+                  boxSize="40px"
+                  borderColor="black"
+                  borderWidth="2px"
+                  onMouseEnter={() => setIsHovered(true)} // Set hover state to true
+                  onMouseLeave={() => setIsHovered(false)} // Set hover state to false
+                />
+              }
+              variant="ghost"
+              aria-label="Profile"
+              _hover={{ 
+                transform: "scale(1.2)", 
+              }}
+              transition="all 0.3s ease-in-out"
+              color={fontColor} 
+            />
+            <MenuList bg={bgColor} color={fontColor}>
+              <MenuItem bg="black" _hover={{ bg: "gray.700" }} onClick={() => alert("View Profile clicked!")}>
+                View Profile
+              </MenuItem>
+              <MenuItem bg="black" _hover={{ bg: "gray.700" }} onClick={() => alert("Account Settings clicked!")}>
+                Account Settings
+              </MenuItem>
+              <MenuItem bg="black" _hover={{ bg: "gray.700" }} onClick={handleLogout}>
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
     </Box>

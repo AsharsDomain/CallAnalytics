@@ -1,4 +1,5 @@
-"use client"
+// Home.js
+"use client";
 import { useState, useEffect } from "react";
 import { Box, Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/react";
 import Header from "@/components/Header";
@@ -9,6 +10,7 @@ import LineChartComponent from "@/components/LineChartComponent";
 import PieChartComponent from "@/components/PieChartComponent";
 import { fetchCalls } from "@/api";
 import CostBreakdown from "@/components/CostBreakdown"; // Import CostBreakdown component
+import ShufflingCards from "@/components/ShufflingCards"; // Import ShufflingCards component
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -19,9 +21,10 @@ export default function Home() {
   });
 
   // Dark theme colors
-  const cardBg = "rgba(30, 30, 30, 0.9)";
+  const cardBg = "black"; // Set card background to black
   const borderColor = "gray.700";
-  const fontColor = "#FF9A00";
+  const fontColor = "white";
+  const headingColor = "#1662D4";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +67,36 @@ export default function Home() {
     // Add more agent data here...
   ];
 
+  // Inspirational quotes for shuffling
+  const quotes = [
+    "Success is not final; failure is not fatal: It is the courage to continue that counts.",
+    "Believe you can and you're halfway there.",
+    "The only way to do great work is to love what you do.",
+    "Strive not to be a success, but rather to be of value.",
+    "I attribute my success to this: I never gave or took any excuse.",
+    "The harder the conflict, the more glorious the triumph.",
+  ];
+
+  // Create card content with quotes
+  const cardsContent = quotes.map((quote, idx) => (
+    <Box 
+      bg="black" // Changed from gray.700 to black
+      p={6} 
+      borderRadius="md" 
+      color="white" 
+      key={idx}
+      textAlign="center"
+      fontSize={{ base: 'md', md: 'lg', lg: 'xl' }}
+      fontStyle="italic"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      // Optional: Add border or shadow if desired
+    >
+      "{quote}"
+    </Box>
+  ));
+
   return (
     <Box maxWidth="100vw" minHeight="100vh" display="flex" flexDirection="column" bg="black">
       <Header />
@@ -85,12 +118,11 @@ export default function Home() {
                   borderColor={borderColor}
                   p={8}
                   borderRadius="lg"
-                  bg={primaryColor} // Set background to primary color
-                  shadow="xl"
+                  bg="black" // Set the background to black
                   flex="1"
                   height="100%" // Ensure the container grows to fill the height
                 >
-                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={headingColor}>
                     Analytics Overview
                   </Text>
                   <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={8}>
@@ -99,7 +131,7 @@ export default function Home() {
                         key={index} 
                         title={item.title} 
                         value={item.value} 
-                        bg={cardBg} 
+                        bg={cardBg} // Set the background to black
                         color={fontColor} 
                         borderColor={borderColor}
                         _hover={{ transform: "scale(1.07)", transition: "all 0.4s ease-in-out" }}
@@ -116,14 +148,13 @@ export default function Home() {
                   borderColor={borderColor} 
                   p={8} 
                   borderRadius="lg" 
-                  bg={primaryColor} // Set background to primary color
-                  shadow="xl"
+                  bg="black" // Set background to black
                   flex="1"
                   height="100%" // Ensure this container grows to match the height of the left container
                   display="flex"
                   flexDirection="column"
                 >
-                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+                  <Text fontSize="2xl" fontWeight="bold" mb={6} color={headingColor}>
                     Graph Overview
                   </Text>
                   <Stack spacing={8} flex="1">
@@ -135,8 +166,8 @@ export default function Home() {
             </Grid>
 
             {/* Additional Graphs Below */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
-              <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="black">
+              <Text fontSize="2xl" fontWeight="bold" mb={6} color={headingColor}>
                 Detailed Graphs
               </Text>
               <Stack spacing={8}>
@@ -145,32 +176,20 @@ export default function Home() {
             </Box>
 
             {/* Product Table with Cost Breakdown */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
-              <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="black">
+              <Text fontSize="2xl" fontWeight="bold" mb={6} color={headingColor}>
                 Call View Stats
               </Text>
               {/* Render CostBreakdown Component */}
               <CostBreakdown callData={callData} agentData={agentData} />
             </Box>
 
-            {/* Additional Container for Multiple Content */}
-            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg={primaryColor} shadow="xl">
+            {/* Additional Container for Shuffling Cards */}
+            <Box border="1px" borderColor={borderColor} p={8} borderRadius="lg" bg="black">
               <Text fontSize="2xl" fontWeight="bold" mb={6} color={fontColor}>
-                Additional Information
+               
               </Text>
-              <Stack spacing={8}>
-                {/* Add any content you want to display here, like more cards, text, or tables */}
-                <Box>
-                  <Text color={fontColor} fontWeight="medium">
-                    Example Section 1: Display additional data or charts here.
-                  </Text>
-                </Box>
-                <Box>
-                  <Text color={fontColor} fontWeight="medium">
-                    Example Section 2: Add more relevant information.
-                  </Text>
-                </Box>
-              </Stack>
+              <ShufflingCards cards={cardsContent} interval={7000} /> {/* Use the ShufflingCards component with 7s interval */}
             </Box>
           </Stack>
         </Box>

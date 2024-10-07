@@ -1,10 +1,11 @@
 import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import callData from "../pieData"; // Update import to point to pieData.js
+import { color } from 'framer-motion';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip);
 
 const PieChartComponent = () => {
   const [pieData, setPieData] = useState({ labels: [], data: [] });
@@ -29,6 +30,7 @@ const PieChartComponent = () => {
         ],
         borderColor: '#fff',
         borderWidth: 2,
+        
       },
     ],
   };
@@ -36,15 +38,6 @@ const PieChartComponent = () => {
   const options = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          color: '#FF9A00',
-          font: {
-            size: 14,
-          },
-        },
-      },
       tooltip: {
         callbacks: {
           label: (context) => `${context.label}: ${context.raw}`, 
@@ -53,11 +46,12 @@ const PieChartComponent = () => {
         bodyColor: '#FF9A00',
       },
     },
+    cutout: '70%', // Set cutout for the donut chart
   };
 
   return (
     <Box>
-      {/* Pie Chart */}
+      {/* Donut Chart */}
       <Box>
         {pieData.labels.length > 0 ? (
           <Pie data={data} options={options} />

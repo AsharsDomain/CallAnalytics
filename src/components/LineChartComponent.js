@@ -1,4 +1,3 @@
-// LineChartComponent.js
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
@@ -19,7 +18,7 @@ const LineChartComponent = () => {
         data: dataValues,
         borderColor: 'rgba(75, 192, 192, 1)', // Line color
         backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
-        fill: true,
+        fill: true,  // Ensures the area under the line is filled
         tension: 0.4,  // Curved lines
       },
     ],
@@ -31,21 +30,21 @@ const LineChartComponent = () => {
       legend: {
         position: 'top',
         labels: {
-          color: '#FF9A00', // Font color for legend text
+          color: 'white', // Font color for legend text
         },
       },
       tooltip: {
         callbacks: {
           label: (context) => `${context.dataset.label}: $${context.raw.toFixed(2)}`, // Adjusting label format
         },
-        titleColor: '#FF9A00', // Font color for tooltip title
-        bodyColor: '#FF9A00', // Font color for tooltip body
+        titleColor: 'white', // Font color for tooltip title
+        bodyColor: 'white', // Font color for tooltip body
       },
     },
     scales: {
       x: {
         ticks: {
-          color: '#FF9A00', // Font color for x-axis labels
+          color: 'white', // Font color for x-axis labels
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
@@ -53,7 +52,7 @@ const LineChartComponent = () => {
       },
       y: {
         ticks: {
-          color: '#FF9A00', // Font color for y-axis labels
+          color: 'white', // Font color for y-axis labels
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
@@ -64,7 +63,7 @@ const LineChartComponent = () => {
 
   return (
     <div>
-     {/* Optional Title */}
+      {/* Optional Title */}
       <Line data={data} options={options} />
     </div>
   );

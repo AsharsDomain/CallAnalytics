@@ -26,7 +26,7 @@ const CostBreakdownPerCall = ({ callData }) => (
       border="1px"
       borderColor="black"
       bg="rgba(0,0,0,0.9)"
-      color="#FF9A00"
+      color="white"
     >
       <Thead>
         <Tr>
@@ -50,7 +50,7 @@ const CostBreakdownPerCall = ({ callData }) => (
           >
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -58,7 +58,7 @@ const CostBreakdownPerCall = ({ callData }) => (
             </Td>
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -66,7 +66,7 @@ const CostBreakdownPerCall = ({ callData }) => (
             </Td>
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -88,7 +88,7 @@ const CostBreakdownPerAgent = ({ agentData }) => (
       border="1px"
       borderColor="black"
       bg="rgba(0,0,0,0.9)"
-      color="#FF9A00"
+      color="white"
     >
       <Thead>
         <Tr>
@@ -115,7 +115,7 @@ const CostBreakdownPerAgent = ({ agentData }) => (
           >
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -123,7 +123,7 @@ const CostBreakdownPerAgent = ({ agentData }) => (
             </Td>
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -131,7 +131,7 @@ const CostBreakdownPerAgent = ({ agentData }) => (
             </Td>
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -139,7 +139,7 @@ const CostBreakdownPerAgent = ({ agentData }) => (
             </Td>
             <Td
               fontSize="lg" // Bigger font size
-              color="#FF9A00"
+              color="white"
               _hover={{ color: "blue.500" }} // Blue color when hovered
               transition="color 0.2s"
             >
@@ -172,7 +172,7 @@ const CostBreakdown = () => {
       bg="rgba(0,0,0,0.9)"
       shadow="xl"
     >
-      <Text fontSize="2xl" fontWeight="bold" mb={6} color="#FF9A00">
+      <Text fontSize="2xl" fontWeight="bold" mb={6} color="#1662D4">
         Cost Breakdown
       </Text>
       <Tabs isFitted variant="enclosed" colorScheme="blackAlpha"> {/* Black theme */}
