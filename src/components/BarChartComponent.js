@@ -1,93 +1,139 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import callData from '@/callData'; // Import callData from data.js
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const BarChartComponent = () => {
+const BarChartComponent = ({ callOutcomes }) => {
+  const chartRef = useRef(null);
+
   // Prepare the data for the chart
-  const labels = callData.map(call => new Date(call.call_date).toLocaleDateString()); // Extracting labels from call dates
-  const dataValues = callData.map(call => call.call_duration); // Extracting call durations for the dataset
+  const labels = Object.keys(callOutcomes);
+  const dataValues = Object.values(callOutcomes);
 
   // Creating gradient color for bars
-  const ctx = document.createElement('canvas').getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(54, 162, 235, 1)');
-  gradient.addColorStop(1, 'rgba(54, 162, 235, 0.5)');
+  const createGradient = (ctx, area) => {
+    const gradient = ctx.createLinearGradient(0, area.bottom, 0, area.top);
+    gradient.addColorStop(0, 'rgba(75, 192, 192, 0.5)');
+    gradient.addColorStop(1, 'rgba(75, 192, 192, 1)');
+    return gradient;
+  };
 
   const data = {
-    labels: labels,
+    labels: labels.map(label =>
+      label.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+    ), // Capitalize and format labels
     datasets: [
       {
-        label: 'Call Duration (minutes)', // Updated label for the chart
+        label: 'Call Outcomes',
         data: dataValues,
-        backgroundColor: gradient, // Use gradient for bars
-        borderColor: 'rgba(54, 162, 235, 1)', // Border color for bars
-        borderWidth: 2,
-        hoverBackgroundColor: 'rgba(54, 162, 235, 0.8)', // Hover effect
-        hoverBorderColor: 'rgba(54, 162, 235, 1)', // Hover border color
-        borderRadius: 5, // Rounded corners for bars
+        backgroundColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            return null;
+          }
+          return createGradient(ctx, chartArea);
+        },
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        hoverBackgroundColor: 'rgba(75, 192, 192, 0.8)',
+        hoverBorderColor: 'rgba(75, 192, 192, 1)',
+        borderRadius: 5,
       },
     ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Allow the chart to adapt its height
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',
         labels: {
-          color: 'white', // Font color for legend text
+          color: 'white',
           font: {
-            size: 16, // Increased font size for legend
-            weight: 'bold', // Bold legend text
+            size: 16,
+            weight: 'bold',
           },
         },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
-        titleColor: 'white', // Font color for tooltip title
-        bodyColor: 'white', // Font color for tooltip body
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        titleColor: 'white',
+        bodyColor: 'white',
         callbacks: {
-          label: (context) => `${context.dataset.label}: ${context.raw} minutes`, // Display duration in minutes
+          label: (context) =>
+            `${context.dataset.label}: ${context.raw} occurrences`,
         },
       },
     },
     scales: {
       x: {
         ticks: {
-          color: 'white', // Font color for x-axis labels
+          color: 'white',
           font: {
-            size: 12, // Font size for x-axis labels
-            weight: 'bold', // Bold x-axis labels
+            size: 12,
+            weight: 'bold',
           },
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
+          color: 'rgba(255, 255, 255, 0.1)',
         },
       },
       y: {
+        beginAtZero: true,
+        min: 0,
+        max: 60, // Set maximum value slightly above the highest count
         ticks: {
-          color: 'white', // Font color for y-axis labels
+          color: 'white',
           font: {
-            size: 12, // Font size for y-axis labels
-            weight: 'bold', // Bold y-axis labels
+            size: 12,
+            weight: 'bold',
           },
         },
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)', // Light grid line color
+          color: 'rgba(255, 255, 255, 0.1)',
         },
       },
     },
   };
 
   return (
-    <div style={{ height: '400px', width: '100%' }}>
-      <Bar data={data} options={options} />
+    <div style={{ height: '500px', width: '100%' }}> {/* Increased height */}
+      <Bar ref={chartRef} data={data} options={options} />
     </div>
   );
 };
 
-export default BarChartComponent;
+// Sample data passed to the component
+const getCallOutcomes = {
+  "customer-ended-call": 59,
+  "exceeded-max-duration": 1,
+  "customer-did-not-answer": 11,
+  "silence-timed-out": 13,
+  "assistant-ended-call": 4,
+  "phone-call-provider-closed-websocket": 5,
+  "customer-did-not-give-microphone-permission": 5
+};
+
+// Example usage of the BarChartComponent
+const App = () => {
+  return (
+    <div>
+      <h1>Call Outcomes Chart</h1>
+      <BarChartComponent callOutcomes={getCallOutcomes} />
+    </div>
+  );
+};
+
+export default App;

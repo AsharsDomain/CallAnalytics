@@ -1,21 +1,40 @@
-import { useParams } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { 
   Box, 
   Text, 
   Flex, 
-  Link, 
   Heading, 
   Divider, 
   VStack, 
+  IconButton, 
   useBreakpointValue 
 } from "@chakra-ui/react";
-import data from "@/tableData.js"; // Import your mock data
-import Header from "@/components/Header"; // Adjust the path as necessary
-import Sidebar from "@/components/Sidebar"; // Adjust the path as necessary
+import { FaPlay, FaPause } from 'react-icons/fa';
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 
 const CallDetails = () => {
-  const { id } = useParams(); // Get the call ID from the route parameters
-  const call = data.find(call => call.call_id === parseInt(id)); // Find the specific call data
+  const { id } = useParams();
+  const location = useLocation();
+  const call = location.state?.callDetails; // Get the passed call details
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const handlePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        // Ensure the audio is ready to play
+        audioRef.current.play().catch(error => {
+          console.error("Error playing audio:", error);
+        });
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   if (!call) {
     return (
@@ -25,153 +44,106 @@ const CallDetails = () => {
     );
   }
 
-  // Determine layout based on screen size
   const isColumn = useBreakpointValue({ base: true, md: false });
+  const blueShadow = "0 4px 6px rgba(66, 153, 225, 0.6)";
 
-  // Define a custom blue shadow
-  const blueShadow = "0 4px 6px rgba(66, 153, 225, 0.6)"; // blue.400 with 60% opacity
+  const formattedStartTime = call.startedat ? new Date(call.startedat).toLocaleString() : "N/A";
+  const formattedEndTime = call.endedat ? new Date(call.endedat).toLocaleString() : "N/A";
 
   return (
     <Box>
-      <Header /> {/* Render Header */}
+      <Header />
       <Flex>
-        <Sidebar /> {/* Render Sidebar */}
+        <Sidebar />
         <Box flex="1" p={6} bg="black" minH="100vh">
           <Heading 
             as="h1" 
             size="lg" 
-            color="white" 
+            color="blue.400" 
             mb={4} 
             textAlign="center"
-            _hover={{ color: "orange.400", transform: "scale(1.05)", transition: "0.2s ease-in-out" }}
+            _hover={{ color: "#1662D4", transform: "scale(1.05)", transition: "0.2s ease-in-out" }}
           >
-            Call Details for ID: {call.call_id}
+            Call Details for ID: {call.id}
           </Heading>
 
           <Divider my={4} borderColor="black" />
 
-          {/* Two-Column Layout */}
-          <Flex
-            direction={isColumn ? "column" : "row"} // Stack vertically on small screens
-            gap={6}
-            justify="space-between"
-          >
-            {/* Call Details Container */}
+          <Flex direction={isColumn ? "column" : "row"} gap={6} justify="space-between">
+            {/* Left Container for Call Details */}
             <Box 
               flex="1" 
               bg="black" 
               p={4} 
               borderRadius="md" 
-              boxShadow={blueShadow} // Apply custom blue shadow
+              boxShadow={blueShadow}
               _hover={{ transform: "scale(1.02)", transition: "transform 0.2s ease-in-out" }}
             >
-              <VStack align="start" spacing={3}>
-                {/* Caller Information */}
-                <Box w="100%" p={2} borderRadius="md" _hover={{ bg: "gray.700" }} transition="background 0.2s ease-in-out">
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Caller Name:</Text>
-                    <Text color="white">{call.caller_name}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Caller Number:</Text>
-                    <Text color="white">{call.caller_number}</Text>
+              <VStack align="start" spacing={4}>
+                <Box w="100%" p={3} borderRadius="md" bg="black" transition="background 0.2s ease-in-out">
+                  <Text fontWeight="bold" color="gray.400" mb={1}>Summary:</Text>
+                  <Text color="white">
+                    {call.summary || "No summary available for this call."}
+                  </Text>
+                </Box>
+
+                <Box w="100%" p={3} borderRadius="md" bg="black" transition="background 0.2s ease-in-out">
+                  <Flex justify="space-between" mb={1}>
+                    <Text fontWeight="bold" color="gray.400">Ended Reason:</Text>
+                    <Text color="white">{call.endedreason || "N/A"}</Text>
                   </Flex>
                 </Box>
 
-                {/* Call Information */}
-                <Box w="100%" p={2} borderRadius="md" _hover={{ bg: "gray.700" }} transition="background 0.2s ease-in-out">
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Date:</Text>
-                    <Text color="white">{new Date(call.call_date).toLocaleDateString()}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Time:</Text>
-                    <Text color="white">{new Date(call.call_date).toLocaleTimeString()}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Duration:</Text>
-                    <Text color="white">{call.call_duration} minutes</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Cost:</Text>
-                    <Text color="white">${call.call_cost}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Outcome:</Text>
-                    <Text color="white">{call.outcome}</Text>
-                  </Flex>
-                </Box>
+                
 
-                {/* Additional Information */}
-                <Box w="100%" p={2} borderRadius="md" _hover={{ bg: "gray.700" }} transition="background 0.2s ease-in-out">
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Type:</Text>
-                    <Text color="white">{call.call_type}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Location:</Text>
-                    <Text color="white">{call.location}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Agent Name:</Text>
-                    <Text color="white">{call.agent_name}</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontWeight="bold" color="gray.400">Call Quality:</Text>
-                    <Text color="white">{call.call_quality}</Text>
-                  </Flex>
+                
+
+                
+
+                {/* Call Recording with Play/Pause Icon */}
+                <Box 
+                  w="100%" 
+                  p={3} 
+                  borderRadius="md" 
+                  bg="black" 
+                  transition="background 0.2s ease-in-out"
+                >
                   <Flex justify="space-between" align="center">
                     <Text fontWeight="bold" color="gray.400">Call Recording:</Text>
-                    <Link 
-                      href={call.call_recording_url} 
-                      isExternal 
-                      color="orange.400" 
-                      _hover={{ color: "blue.400", textDecoration: "underline" }}
-                    >
-                      Listen
-                    </Link>
+                    {call.recordingurl ? (
+                      <Flex alignItems="center">
+                        <audio ref={audioRef} src={call.recordingurl} />
+                        <IconButton 
+                          aria-label={isPlaying ? "Pause recording" : "Play recording"} 
+                          icon={isPlaying ? <FaPause /> : <FaPlay />} 
+                          onClick={handlePlayPause} 
+                          variant="ghost" 
+                          colorScheme="blue"
+                        />
+                      </Flex>
+                    ) : (
+                      <Text color="gray.400">N/A</Text>
+                    )}
                   </Flex>
                 </Box>
               </VStack>
             </Box>
 
-            {/* Transcript Container */}
+            {/* Right Container for Transcript */}
             <Box 
               flex="1" 
               bg="black" 
               p={4} 
               borderRadius="md" 
-              boxShadow={blueShadow} // Apply custom blue shadow
+              boxShadow={blueShadow}
               _hover={{ transform: "scale(1.02)", transition: "transform 0.2s ease-in-out" }}
             >
-              <Heading 
-                as="h2" 
-                size="md" 
-                color="blue.400" 
-                mb={4} 
-                textAlign="center"
-                _hover={{ color: "orange.400", transform: "scale(1.05)", transition: "0.2s ease-in-out" }}
-              >
-                Transcript
-              </Heading>
-
-              <Divider my={2} borderColor="gray.600" />
-
-              <Box 
-                bg="black" 
-                p={3} 
-                borderRadius="md" 
-                maxH="400px" 
-                overflowY="auto"
-              >
-                <Text color="white" whiteSpace="pre-wrap">
-                  {call.transcript || "No transcript available for this call."}
-                </Text>
-              </Box>
+              <Text fontWeight="bold" color="gray.400" mb={2}>Transcript:</Text>
+              <Text color="white" whiteSpace="pre-wrap">
+                {call.transcript || "No transcript available for this call."}
+              </Text>
             </Box>
           </Flex>
-
-          <Divider my={4} borderColor="gray.600" />
         </Box>
       </Flex>
     </Box>

@@ -35,7 +35,6 @@ import Sidebar from "./Sidebar"; // Adjust the import path as needed
 
 const CallExpense = () => {
   // State variables for the form fields
-  // const [agencyName, setAgencyName] = useState(""); // Removed
   const [agencyMargin, setAgencyMargin] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [providerAPI, setProviderAPI] = useState("");
@@ -106,8 +105,6 @@ const CallExpense = () => {
       return;
     }
 
-    // Example calculation: Total Cost = Maintenance + (Per Minute Fee * Fixed Minutes)
-    // Note: Since Call Duration (minutes) isn't captured, we'll assume a fixed value or consider adding a new field.
     const fixedMinutes = 100; // Example: 100 minutes
     const total = maintenance + perMinute * fixedMinutes;
     setTotalCost(total);
@@ -129,7 +126,6 @@ const CallExpense = () => {
     ]);
 
     // Reset inputs
-    // setAgencyName(""); // Removed
     setAgencyMargin("");
     setProviderAPI("");
     setApiKey("");
@@ -203,7 +199,7 @@ const CallExpense = () => {
       <Header />
 
       {/* Main Layout with Sidebar and Content */}
-      <Flex>
+      <Flex direction={{ base: "column", md: "row" }}>
         {/* Sidebar */}
         <Box
           width={{ base: "full", md: "250px" }}
@@ -226,7 +222,12 @@ const CallExpense = () => {
           overflowY="auto"
         >
           {/* Page Title */}
-          <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold" color="#1662D4">
+          <Text
+            fontSize={{ base: "lg", md: "2xl" }}
+            fontWeight="bold"
+            color="#1662D4"
+            textAlign={{ base: "center", md: "left" }}
+          >
             Call Expense Entry
           </Text>
 
@@ -234,14 +235,17 @@ const CallExpense = () => {
           <Modal isOpen={isModalOpen} onClose={closeModal}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Choose an Assistant to Set the Per Minute Fee</ModalHeader>
+              <ModalHeader>
+                Choose an Assistant to Set the Per Minute Fee
+              </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <VStack spacing={4} align="stretch">
                   {assistants.map((assistant) => (
                     <Button
                       key={assistant.name}
-                      colorScheme="blue"
+                      bg="#1662D4"
+                      color="white"
                       onClick={() => handleAssistantSelect(assistant)}
                     >
                       {assistant.name} - ${assistant.fee.toFixed(2)} / min
@@ -270,7 +274,7 @@ const CallExpense = () => {
               {/* Assistant Selection */}
               <FormControl>
                 <FormLabel color="white">Assistant</FormLabel>
-                <Button onClick={openModal} colorScheme="blue">
+                <Button onClick={openModal} colorScheme="blue" width="full">
                   {selectedAssistant ? selectedAssistant : "Select Assistant"}
                 </Button>
               </FormControl>
@@ -289,60 +293,38 @@ const CallExpense = () => {
               </FormControl>
 
               {/* Additional Cost Inputs */}
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                {/* Monthly Maintenance Cost */}
                 <FormControl>
-                  <FormLabel color="white">Monthly Maintenance Cost ($)</FormLabel>
+                  <FormLabel color="white">Monthly Maintenance Cost</FormLabel>
                   <Input
                     type="number"
                     value={monthlyMaintenanceCost}
                     onChange={(e) => setMonthlyMaintenanceCost(e.target.value)}
-                    placeholder="Enter maintenance cost"
+                    placeholder="Enter monthly cost"
                     bg="black"
                     color="white"
                   />
                 </FormControl>
+
+                {/* Per Minute Call Fee */}
                 <FormControl>
-                  <FormLabel color="white">Per Minute Call Fee ($)</FormLabel>
+                  <FormLabel color="white">Per Minute Call Fee</FormLabel>
                   <Input
                     type="number"
                     value={perMinuteCallFee}
+                    onChange={(e) => setPerMinuteCallFee(e.target.value)}
+                    placeholder="Enter per minute call fee"
+                    bg="black"
+                    color="white"
                     isReadOnly
-                    placeholder="Set by assistant"
-                    bg="black"
-                    color="white"
-                  />
-                </FormControl>
-              </SimpleGrid>
-
-              {/* Provider and API Inputs */}
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-                <FormControl>
-                  <FormLabel color="white">Provider API by Agency</FormLabel>
-                  <Input
-                    type="text"
-                    value={providerAPI}
-                    onChange={(e) => setProviderAPI(e.target.value)}
-                    placeholder="Enter Provider API"
-                    bg="black"
-                    color="white"
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel color="white">API Key</FormLabel>
-                  <Input
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="Enter API Key"
-                    bg="black"
-                    color="white"
                   />
                 </FormControl>
               </SimpleGrid>
 
               {/* Billing Start Date */}
               <FormControl>
-                <FormLabel color="white">Client's Billing Start Date</FormLabel>
+                <FormLabel color="white">Billing Start Date</FormLabel>
                 <Input
                   type="date"
                   value={billingStartDate}
@@ -352,131 +334,70 @@ const CallExpense = () => {
                 />
               </FormControl>
 
-              {/* Currency Selection */}
-              <FormControl>
-                <FormLabel color="white">Currency</FormLabel>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    rightIcon={<IoIosArrowDropdownCircle />}
-                    bg="black"
-                    color="orange.400"
-                    borderColor="orange.400"
-                    _hover={{ bg: "black" }}
-                  >
-                    {currency}
-                  </MenuButton>
-                  <MenuList bg="black" color="white">
-                    {["USD", "EUR", "GBP", "AUD", "CAD"].map((curr) => (
-                      <MenuItem
-                        key={curr}
-                        bg="black"
-                        onClick={() => setCurrency(curr)}
-                        _hover={{ bg: "black", color: "orange.400" }}
-                      >
-                        {curr}
-                      </MenuItem>
-                    ))}
-                    {/* Add more currencies as needed */}
-                  </MenuList>
-                </Menu>
-              </FormControl>
-
-              {/* Calculation and Total Display */}
-              <VStack align="stretch" spacing={4}>
-                <Flex justify="space-between" align="center">
-                  <Button
-                    colorScheme="green"
-                    onClick={handleCalculate}
-                    width={{ base: "100%", md: "200px" }}
-                  >
-                    Calculate Total Cost
-                  </Button>
-                  <Text fontSize="lg" fontWeight="medium" color="#1662D4">
-                    Total Cost: {currency} {totalCost.toFixed(2)}
-                  </Text>
-                </Flex>
-
-                <HStack spacing={4}>
-                  <Button
-                    colorScheme="blue"
-                    onClick={handleExportCSV}
-                    width="200px"
-                  >
-                    Export to CSV
-                  </Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={handleClearHistory}
-                    width="200px"
-                  >
-                    Clear History
-                  </Button>
-                </HStack>
-              </VStack>
+              {/* Calculate Button */}
+              <Button
+                colorScheme="blue"
+                onClick={handleCalculate}
+                width={{ base: "full", md: "auto" }}
+              >
+                Calculate
+              </Button>
             </VStack>
           </Box>
 
           {/* Call History Table */}
-          <Box
-            bg="black"
-            p={6}
-            borderRadius="lg"
-            boxShadow={blueShadow} // Apply custom blue shadow
-            border="1px"
-            borderColor="black"
-          >
-            <VStack align="stretch" spacing={4}>
-              <Flex justify="space-between" align="center">
-                <Text fontSize="xl" fontWeight="bold" color="#1662D4">
-                  Call History
-                </Text>
-                {callHistory.length > 0 && (
-                  <Button
-                    colorScheme="red"
-                    size="sm"
-                    onClick={handleClearHistory}
-                  >
-                    Clear History
-                  </Button>
-                )}
-              </Flex>
-              <Table variant="simple" colorScheme="blackAlpha" size="md">
+          {callHistory.length > 0 && (
+            <Box overflowX="auto">
+              <Table size="sm" variant="simple" colorScheme="blue">
                 <Thead>
                   <Tr>
                     <Th color="white">Assistant</Th>
                     <Th color="white">Margin (%)</Th>
-                    <Th color="white">Maintenance ($)</Th>
-                    <Th color="white">Per Minute Fee ($)</Th>
+                    <Th color="white">Maintenance</Th>
+                    <Th color="white">Per Minute Fee</Th>
                     <Th color="white">Total</Th>
                     <Th color="white">Currency</Th>
-                    <Th color="white">Provider API</Th>
+                    <Th color="white">API Provider</Th>
                     <Th color="white">API Key</Th>
                     <Th color="white">Billing Start Date</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {callHistory.map((call, index) => (
+                  {callHistory.map((entry, index) => (
                     <Tr key={index}>
-                      <Td color="#1662D4">{call.assistant}</Td>
-                      <Td color="#1662D4">{call.margin.toFixed(2)}</Td>
-                      <Td color="#1662D4">{call.maintenance.toFixed(2)}</Td>
-                      <Td color="#1662D4">{call.perMinute.toFixed(2)}</Td>
-                      <Td color="#1662D4">{call.total.toFixed(2)}</Td>
-                      <Td color="#1662D4">{call.currency}</Td>
-                      <Td color="#1662D4">{call.providerAPI}</Td>
-                      <Td color="#1662D4">{call.apiKey}</Td>
-                      <Td color="#1662D4">
-                        {call.billingStartDate
-                          ? new Date(call.billingStartDate).toLocaleDateString()
-                          : "N/A"}
-                      </Td>
+                      <Td>{entry.assistant}</Td>
+                      <Td>{entry.margin.toFixed(2)}</Td>
+                      <Td>{entry.maintenance.toFixed(2)}</Td>
+                      <Td>{entry.perMinute.toFixed(2)}</Td>
+                      <Td>{entry.total.toFixed(2)}</Td>
+                      <Td>{entry.currency}</Td>
+                      <Td>{entry.providerAPI}</Td>
+                      <Td>{entry.apiKey}</Td>
+                      <Td>{entry.billingStartDate}</Td>
                     </Tr>
                   ))}
                 </Tbody>
               </Table>
-            </VStack>
-          </Box>
+            </Box>
+          )}
+
+          {/* Clear History and Export Buttons */}
+          <HStack justify="space-between">
+            <Button
+              colorScheme="red"
+              onClick={handleClearHistory}
+              width={{ base: "full", md: "auto" }}
+            >
+              Clear History
+            </Button>
+            <Button
+              colorScheme="blue"
+              onClick={handleExportCSV}
+              width={{ base: "full", md: "auto" }}
+            >
+              Export to CSV
+            </Button>
+          </HStack>
         </Flex>
       </Flex>
     </Box>

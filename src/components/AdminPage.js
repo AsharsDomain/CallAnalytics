@@ -159,7 +159,7 @@ const AdminPage = () => {
         {/* Main content area */}
         <Box as="main" flex="1" p={8} display="flex" flexDirection="column" gap={8}>
           <Box p={4}>
-            <Text fontSize="2xl" fontWeight="bold" mb={6} color="#FF9A00">
+            <Text fontSize="2xl" fontWeight="bold" mb={6} color="#1662D4">
               Welcome to the Admin Page
             </Text>
             <Text mt={2} color="white">
@@ -176,7 +176,7 @@ const AdminPage = () => {
             border="1px"
             borderColor="black"
           >
-            <Text fontSize="xl" fontWeight="bold" color="#FF9A00" mb={4}>
+            <Text fontSize="xl" fontWeight="bold" color="#1662D4" mb={4}>
               User Management
             </Text>
             {/* Search Input */}
@@ -187,7 +187,8 @@ const AdminPage = () => {
               mb={4}
               color="white"
               bg="blackAlpha.600"
-              _placeholder={{ color: "gray.400" }}
+              _placeholder={{ color: "white" }}
+              border="1px"
             />
             {/* Role Filter Select */}
             <Select
@@ -197,8 +198,8 @@ const AdminPage = () => {
               mb={4}
               color="white"
               bg="black"
-              borderColor="gray.600"
-              _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+              borderColor="white"
+              _focus={{ borderColor: "#1662D4", boxShadow: "0 0 0 1px #1662D4" }}
             >
               <option value="User" style={{ backgroundColor: "black", color: "white" }}>
                 User
@@ -220,7 +221,7 @@ const AdminPage = () => {
               </option>
             </Select>
             {/* Add User Button */}
-            <Button colorScheme="green" onClick={handleAddUserOpen} mb={4}>
+            <Button bg="#1662D4" color="white" onClick={handleAddUserOpen} mb={4}>
               Add New User
             </Button>
             {/* Users Table */}
@@ -257,8 +258,8 @@ const AdminPage = () => {
                   >
                     <Td
                       fontSize="lg"
-                      color="#FF9A00"
-                      _hover={{ color: "blue.500" }} // Blue color when hovered
+                      color="white"
+                      _hover={{ color: "blue.600" }} // Blue color when hovered
                       transition="0.3s ease-out"
                     >
                       {user.name}
@@ -272,8 +273,9 @@ const AdminPage = () => {
                     <Td>
                       <Flex gap={2}>
                         <Button
-                          colorScheme="yellow"
+                          bg="#1662D4"
                           size="sm"
+                          color="white"
                           onClick={() => handleEdit(user)}
                         >
                           Edit
@@ -307,7 +309,7 @@ const AdminPage = () => {
                     borderColor="whiteAlpha.700"
                     bg="black"
                     color="white"
-                    _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+                    _focus={{ borderColor: "#1662D4", boxShadow: "0 0 0 1px #1662D4" }}
                   >
                     <option value="User" style={{ backgroundColor: "black", color: "white" }}>
                       User
@@ -375,7 +377,7 @@ const AdminPage = () => {
                     borderColor="whiteAlpha.700"
                     bg="black"
                     color="white"
-                    _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+                    _focus={{ borderColor: "#1662D4", boxShadow: "0 0 0 1px #1662D4" }}
                   >
                     <option value="User" style={{ backgroundColor: "black", color: "white" }}>
                       User

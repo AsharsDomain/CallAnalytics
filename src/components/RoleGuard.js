@@ -1,14 +1,17 @@
+// src/components/RoleGuard.js
+import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
- // Assuming you have a custom hook for authentication
-import { useAuth } from "./useAuth";
+import { RoleContext } from "./RoleContext";
+
 const RoleGuard = ({ children, allowedRoles }) => {
-  const { user } = useAuth(); // Get user data, including role (implement useAuth if not already done)
+  const { role } = useContext(RoleContext);
 
-  if (!allowedRoles.includes(user?.role)) {
-    return <Navigate to="/admin" replace />; // Redirect to home if user doesn't have the correct role
+  if (allowedRoles.includes(role)) {
+    return children;
+  } else {
+    // Optionally, redirect to an unauthorized page or show a message
+    return <Navigate to="/unauthorized" replace />;
   }
-
-  return children; // Render the children components if the user has the correct role
 };
 
 export default RoleGuard;

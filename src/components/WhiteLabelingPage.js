@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box,
   Button,
   FormControl,
   FormLabel,
   Input,
-  Select,
   VStack,
   Heading,
   ColorModeProvider,
@@ -18,22 +17,29 @@ import Header from './Header';
 
 const WhiteLabelingPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const [logoUrl, setLogoUrl] = useState('');
+  const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem('logoUrl') || '');
+  const [logoSize, setLogoSize] = useState(() => localStorage.getItem('logoSize') || '40');
   const [primaryColor, setPrimaryColor] = useState('#00BFFF');
-  const [layout, setLayout] = useState('default');
-  const [headingText, setHeadingText] = useState(() => {
-    return localStorage.getItem('customHeading') || 'White Labeling Settings';
-  });
-  const [customUrl, setCustomUrl] = useState(() => {
-    // Load saved custom URL from localStorage
-    return localStorage.getItem('customUrl') || '';
-  });
+  const [headingText, setHeadingText] = useState(() => localStorage.getItem('customHeading') || '');
+  const [customUrl, setCustomUrl] = useState(() => localStorage.getItem('customUrl') || '');
   const [successMessage, setSuccessMessage] = useState('');
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoUrl(reader.result); // Set the logo URL to the result of FileReader
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
+    }
+  };
 
   const handleSave = () => {
     // Save settings to localStorage
     localStorage.setItem('customHeading', headingText);
     localStorage.setItem('logoUrl', logoUrl);
+    localStorage.setItem('logoSize', logoSize);
     localStorage.setItem('customUrl', customUrl);
     localStorage.setItem('primaryColor', primaryColor);
     setSuccessMessage('Customization settings saved successfully!');
@@ -42,20 +48,15 @@ const WhiteLabelingPage = () => {
   return (
     <ColorModeProvider>
       <Flex direction="column" height="100vh">
-        {/* Header Component with headingText prop */}
-        <Header headingText={headingText} />
+        <Header defaultHeadingText={headingText} /> {/* Pass the defaultHeadingText prop */}
 
         <Flex flex="1">
-          {/* Sidebar Component */}
           <Sidebar />
 
-          {/* Main Content Area */}
           <Box flex="1" p={5}>
             <VStack spacing={4} w="100%" maxW="md" mx="auto" mt={10}>
-              {/* Main Heading */}
               <Heading>White Labeling Settings</Heading>
 
-              {/* Customizable Heading Input */}
               <FormControl id="headingText">
                 <FormLabel>Custom Heading</FormLabel>
                 <Input
@@ -68,18 +69,25 @@ const WhiteLabelingPage = () => {
 
               {successMessage && <Alert status="success">{successMessage}</Alert>}
 
-              {/* Dashboard Logo URL Input */}
-              <FormControl id="logoUrl">
-                <FormLabel>Dashboard Logo URL</FormLabel>
+              <FormControl id="logoUpload">
+                <FormLabel>Upload Dashboard Logo</FormLabel>
                 <Input
-                  type="text"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="Enter logo URL"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
                 />
               </FormControl>
 
-              {/* Custom URL Input */}
+              <FormControl id="logoSize">
+                <FormLabel>Logo Size (in px)</FormLabel>
+                <Input
+                  type="number"
+                  value={logoSize}
+                  onChange={(e) => setLogoSize(e.target.value)}
+                  placeholder="Enter logo size in px"
+                />
+              </FormControl>
+
               <FormControl id="customUrl">
                 <FormLabel>Custom Website Address</FormLabel>
                 <Input
@@ -90,7 +98,6 @@ const WhiteLabelingPage = () => {
                 />
               </FormControl>
 
-              {/* Primary Color Input */}
               <FormControl id="primaryColor">
                 <FormLabel>Primary Color</FormLabel>
                 <Input
@@ -99,8 +106,6 @@ const WhiteLabelingPage = () => {
                   onChange={(e) => setPrimaryColor(e.target.value)}
                 />
               </FormControl>
-
-              
 
               <Button colorScheme="blue" onClick={handleSave}>
                 Save Customizations

@@ -1,6 +1,9 @@
-import { Box, Flex, Heading, Text, Input, Button, Select, Checkbox, Stack } from "@chakra-ui/react";
+import { 
+  Box, Flex, Heading, Text, Input, Button, Select, Checkbox, Stack, Divider, Card, CardBody, Icon 
+} from "@chakra-ui/react";
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar"; // Adjust the import path as necessary
+import { FaUser, FaLock, FaBell, FaGlobe, FaMoneyBillWave } from 'react-icons/fa';
 
 const SettingsPage = () => {
   const [name, setName] = useState("");
@@ -43,184 +46,215 @@ const SettingsPage = () => {
       alert("New passwords do not match!");
       return;
     }
-
-    // Simulate password change (here you might want to send a request to your backend)
     alert("Password changed successfully!");
-    // Reset password fields
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
   };
 
   return (
-    <Box>
+    <Box bg="black" minH="100vh">
       <Flex direction={{ base: "column", md: "row" }} height="100vh">
-        {/* Sidebar will take full width on mobile */}
+        {/* Sidebar */}
         <Box display={{ base: "block", md: "block" }}>
           <Sidebar />
         </Box>
 
-        {/* Flex wrapper for user settings */}
-        <Flex
-          flex="1"
-          p={{ base: 4, md: 6 }}
-          align="center"
-          justify="center"
-          flexDirection="column" // Ensure column direction for centering content
-        >
-          <Box
-            w="100%"
-            maxW="400px"
-            textAlign="center"
-            bg={{ base: "gray.900", md: "transparent" }}
-            p={{ base: 6, md: 0 }}
-            borderRadius={{ base: "md", md: "none" }}
-            mx="auto" // Horizontally center the Box
-          >
-            <Heading as="h1" size="lg" mb={4} color="blue.400">
-              User Settings
-            </Heading>
+        {/* Main content */}
+        <Flex flex="1" p={{ base: 4, md: 8 }} justify="center">
+          <Box w="100%" maxW="800px" mx="auto">
+            <Card bg="black" p={8} borderRadius="md" shadow="xl">
+              <CardBody>
+                <Heading color="blue.400" mb={6} textAlign="center">
+                  User Settings
+                </Heading>
 
-            {/* Profile Information Section */}
-            <Text color="white" mb={2}>Profile Information:</Text>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
+                {/* Profile Information Section */}
+                <Box mb={8}>
+                  <Heading size="md" color="white" mb={4}>
+                    <Icon as={FaUser} mr={2} /> Profile Information
+                  </Heading>
+                  <Stack spacing={4}>
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your full name"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                    />
+                    <Input
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                      type="email"
+                    />
+                  </Stack>
+                </Box>
 
-            {/* Social Media URLs Section */}
-            <Text color="white" mt={4}>Social Media URLs:</Text>
-            <Input
-              value={instagramUrl}
-              onChange={(e) => setInstagramUrl(e.target.value)}
-              placeholder="Enter Instagram URL"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
-            <Input
-              value={linkedinUrl}
-              onChange={(e) => setLinkedinUrl(e.target.value)}
-              placeholder="Enter LinkedIn URL"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
+                {/* Social Media URLs */}
+                <Box mb={8}>
+                  <Heading size="md" color="white" mb={4}>
+                    Social Media Links
+                  </Heading>
+                  <Stack spacing={4}>
+                    <Input
+                      value={instagramUrl}
+                      onChange={(e) => setInstagramUrl(e.target.value)}
+                      placeholder="https://www.instagram.com/yourusername"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                      type="url"
+                    />
+                    <Input
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      placeholder="https://www.linkedin.com/in/yourusername"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                      type="url"
+                    />
+                  </Stack>
+                </Box>
 
-            {/* Notification Preferences Section */}
-            <Text color="white" mt={4}>Notification Preferences:</Text>
-            <Stack spacing={2} mb={4}>
-              <Checkbox
-                name="emailNotifications"
-                isChecked={notifications.emailNotifications}
-                onChange={handleNotificationChange}
-                colorScheme="blue"
-              >
-                Email Notifications
-              </Checkbox>
-              <Checkbox
-                name="smsNotifications"
-                isChecked={notifications.smsNotifications}
-                onChange={handleNotificationChange}
-                colorScheme="blue"
-              >
-                SMS Notifications
-              </Checkbox>
-            </Stack>
+                <Divider my={6} borderColor="black" />
 
-            {/* Time Zone Selection */}
-            <Text color="white" mt={4}>Time Zone:</Text>
-            <Select
-              value={timeZone}
-              onChange={(e) => setTimeZone(e.target.value)}
-              mb={4}
-              bg="gray.700"
-              color="white"
-              borderColor="gray.600"
-              _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
-              sx={{
-                '& option': {
-                  backgroundColor: 'black',
-                  color: 'white',
-                },
-              }}
-            >
-              {timeZones.map((zone) => (
-                <option key={zone} value={zone}>{zone}</option>
-              ))}
-            </Select>
+                {/* Notification Preferences */}
+                <Box mb={8}>
+                  <Heading size="md" color="white" mb={4}>
+                    <Icon as={FaBell} mr={2} /> Notifications
+                  </Heading>
+                  <Stack spacing={4}>
+                    <Checkbox
+                      name="emailNotifications"
+                      isChecked={notifications.emailNotifications}
+                      onChange={handleNotificationChange}
+                      colorScheme="blue"
+                      color="white"
+                    >
+                      Email Notifications
+                    </Checkbox>
+                    <Checkbox
+                      name="smsNotifications"
+                      isChecked={notifications.smsNotifications}
+                      onChange={handleNotificationChange}
+                      colorScheme="blue"
+                      color="white"
+                    >
+                      Slack Notification
+                    </Checkbox>
+                  </Stack>
+                </Box>
 
-            {/* Currency Selection */}
-            <Text color="white" mt={4}>Currency:</Text>
-            <Select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              mb={4}
-              bg="gray.700"
-              color="white"
-              borderColor="gray.600"
-              _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
-              sx={{
-                '& option': {
-                  backgroundColor: 'black',
-                  color: 'white',
-                },
-              }}
-            >
-              {currencies.map((curr) => (
-                <option key={curr} value={curr}>{curr}</option>
-              ))}
-            </Select>
+                {/* Time Zone and Currency */}
+                <Box mb={8}>
+                  <Heading size="md" color="white" mb={4}>
+                    <Icon as={FaGlobe} mr={2} /> Time Zone & Currency
+                  </Heading>
+                  <Flex justify="space-between" direction={{ base: "column", md: "row" }}>
+                    <Select
+                      value={timeZone}
+                      onChange={(e) => setTimeZone(e.target.value)}
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                      _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+                      mb={{ base: 4, md: 0 }}
+                      mr={{ md: 2 }}
+                    >
+                      <option value="" disabled>
+                        Select Time Zone
+                      </option>
+                      {timeZones.map((zone) => (
+                        <option key={zone} value={zone}>
+                          {zone}
+                        </option>
+                      ))}
+                    </Select>
 
-            {/* Change Password Section */}
-            <Text color="white" mt={4}>Change Password:</Text>
-            <Input
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Current Password"
-              type="password"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
-            <Input
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="New Password"
-              type="password"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
-            <Input
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm New Password"
-              type="password"
-              mb={4}
-              bg="gray.700"
-              color="white"
-            />
-            <Button onClick={handleChangePassword} colorScheme="blue" mt={4} w="full">
-              Change Password
-            </Button>
+                    <Select
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                      _focus={{ borderColor: "#FF9A00", boxShadow: "0 0 0 1px #FF9A00" }}
+                    >
+                      <option value="" disabled>
+                        Select Currency
+                      </option>
+                      {currencies.map((curr) => (
+                        <option key={curr} value={curr}>
+                          {curr}
+                        </option>
+                      ))}
+                    </Select>
+                  </Flex>
+                </Box>
 
-            {/* Save Button */}
-            <Button onClick={handleSaveProfile} colorScheme="blue" mt={4} w="full">
-              Save Changes
-            </Button>
+                <Divider my={6} borderColor="black" />
+
+                {/* Change Password Section */}
+                <Box mb={8}>
+                  <Heading size="md" color="white" mb={4}>
+                    <Icon as={FaLock} mr={2} /> Change Password
+                  </Heading>
+                  <Stack spacing={4}>
+                    <Input
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      type="password"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                    />
+                    <Input
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Enter new password"
+                      type="password"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                    />
+                    <Input
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      type="password"
+                      bg="black"
+                      color="white"
+                      _placeholder={{ color: "gray.400" }}
+                    />
+                    <Button
+                      onClick={handleChangePassword}
+                      colorScheme="blue"
+                      w="full"
+                      mt={4}
+                    >
+                      Change Password
+                    </Button>
+                  </Stack>
+                </Box>
+
+                {/* Save Button */}
+                <Button
+                  onClick={handleSaveProfile}
+                  colorScheme="blue"
+                  size="lg"
+                  w="full"
+                  mt={6}
+                >
+                  Save Changes
+                </Button>
+              </CardBody>
+            </Card>
           </Box>
         </Flex>
       </Flex>

@@ -3,7 +3,6 @@ import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import callData from "../pieData"; // Update import to point to pieData.js
-import { color } from 'framer-motion';
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -30,7 +29,6 @@ const PieChartComponent = () => {
         ],
         borderColor: '#fff',
         borderWidth: 2,
-        
       },
     ],
   };
@@ -44,6 +42,11 @@ const PieChartComponent = () => {
         },
         titleColor: '#FF9A00',
         bodyColor: '#FF9A00',
+      },
+      legend: {
+        labels: {
+          color: 'white', // Set legend label color to white
+        },
       },
     },
     cutout: '70%', // Set cutout for the donut chart

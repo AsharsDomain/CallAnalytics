@@ -1,29 +1,34 @@
 import { useState } from "react";
 import { Box, Button, Input, FormControl, FormLabel, Heading, VStack, Alert } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate } from "react-router-dom";
+import { useSignIn } from "@clerk/clerk-react"; // Import useSignIn hook
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const { signIn, setSession } = useSignIn(); // Initialize Clerk's useSignIn
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    try {
-      // Example authentication logic
-      if (email === "test@example.com" && password === "password") {
-        // Successful login
-        localStorage.setItem("authToken", "your-token-here");
-        alert("Login successful!");
+    e.preventDefault();
+    setError(null); // Reset error before new attempt
 
-        // Redirect to the dashboard after successful login
-        navigate("/"); // Redirect to the dashboard
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      if (signInAttempt.status === "complete") {
+        // If login is successful, Clerk automatically manages the session
+        alert("Login successful!");
+        navigate("/"); // Redirect to dashboard
       } else {
-        throw new Error("Invalid email or password");
+        setError("Login failed, please try again.");
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.errors ? err.errors[0].message : err.message);
     }
   };
 
@@ -32,7 +37,6 @@ export default function Login() {
       <Heading>Login</Heading>
       {error && <Alert status="error">{error}</Alert>}
 
-      {/* Wrap the form in an HTML <form> tag */}
       <Box as="form" w="full" onSubmit={handleLogin}>
         <FormControl id="email">
           <FormLabel>Email address</FormLabel>

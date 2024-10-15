@@ -1,20 +1,28 @@
+// LineChartComponent.jsx
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import callData from '@/callData'; // Importing callData from data.js
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineChartComponent = () => {
+const LineChartComponent = ({ callVolumeTrends }) => {
+  // Handle cases where callVolumeTrends might be empty
+  if (!callVolumeTrends || callVolumeTrends.length === 0) {
+    return <p style={{ color: 'white' }}>No call volume data available.</p>;
+  }
+
+  // Sort the trends by date if necessary
+  const sortedTrends = callVolumeTrends.sort((a, b) => new Date(a.date) - new Date(b.date));
+
   // Prepare the data for the chart
-  const labels = callData.map(call => new Date(call.call_date).toLocaleDateString()); // Extracting labels from call dates
-  const dataValues = callData.map(call => call.call_cost); // Extracting call costs for the dataset
+  const labels = sortedTrends.map(trend => new Date(trend.date).toLocaleDateString());
+  const dataValues = sortedTrends.map(trend => trend.volume);
 
   const data = {
     labels: labels,
     datasets: [
       {
-        label: 'Call Costs',
+        label: 'Call Volume',
         data: dataValues,
         borderColor: 'rgba(75, 192, 192, 1)', // Line color
         backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
@@ -35,7 +43,7 @@ const LineChartComponent = () => {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.dataset.label}: $${context.raw.toFixed(2)}`, // Adjusting label format
+          label: (context) => `Call Volume: ${context.raw}`, // Adjusting label format
         },
         titleColor: 'white', // Font color for tooltip title
         bodyColor: 'white', // Font color for tooltip body
