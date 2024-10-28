@@ -4,7 +4,6 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { Refine } from "@refinedev/core";
 import routerProvider from "@refinedev/react-router-v6";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AuthGuard from "@/components/AuthGuard";
 import RoleGuard from "@/components/RoleGuard"; // Import RoleGuard
 import Home from "./page";
 import { ProductTable } from "@/components/ProductTable";
@@ -61,9 +60,9 @@ export default function RootLayout() {
                     <Route
                       path="/"
                       element={
-                        <AuthGuard>
-                          <Home /> {/* Render the dashboard page here */}
-                        </AuthGuard>
+                        
+                          <Home /> 
+                       
                       }
                     />
 
@@ -71,9 +70,9 @@ export default function RootLayout() {
                     <Route
                       path="/call/:id"
                       element={
-                        <AuthGuard>
-                          <CallDetails /> {/* Render the CallDetails component here */}
-                        </AuthGuard>
+                        
+                          <CallDetails />
+                        
                       }
                     />
 
@@ -81,9 +80,9 @@ export default function RootLayout() {
                     <Route
                       path="/settings"
                       element={
-                        <AuthGuard>
-                          <MainComponent /> {/* Render the SettingsPage component here */}
-                        </AuthGuard>
+                        
+                          <MainComponent /> 
+                        
                       }
                     />
 
@@ -91,9 +90,9 @@ export default function RootLayout() {
                     <Route
                       path="/products"
                       element={
-                        <AuthGuard>
-                          <ProductTable /> {/* Render the ProductTable component here */}
-                        </AuthGuard>
+                       
+                          <ProductTable /> 
+                       
                       }
                     />
 
@@ -101,9 +100,9 @@ export default function RootLayout() {
                     <Route
                       path="/alerts"
                       element={
-                        <AuthGuard>
-                          <AlertsPage /> {/* Render the AlertsPage component here */}
-                        </AuthGuard>
+                       
+                          <AlertsPage /> 
+                       
                       }
                     />
 
@@ -111,11 +110,11 @@ export default function RootLayout() {
                     <Route
                       path="/call-expense"
                       element={
-                        <AuthGuard>
-                          <RoleGuard allowedRoles={["Admin", "Client"]}>
-                            <CallExpense /> {/* Render the CallExpense component here */}
+                        
+                          <RoleGuard allowedRoles={["Admin", "Agency"]}>
+                            <CallExpense /> 
                           </RoleGuard>
-                        </AuthGuard>
+                        
                       }
                     />
 
@@ -123,9 +122,9 @@ export default function RootLayout() {
                     <Route
                       path="/analytics"
                       element={
-                        <AuthGuard>
-                          <AnalyticsPage /> {/* Render the new AnalyticsPage here */}
-                        </AuthGuard>
+                        
+                          <AnalyticsPage /> 
+                        
                       }
                     />
 
@@ -133,11 +132,11 @@ export default function RootLayout() {
                     <Route
                       path="/whitelabel"
                       element={
-                        <AuthGuard>
-                          <RoleGuard allowedRoles={["Admin", "Client"]}>
-                            <WhiteLabelingPage /> {/* Render the WhiteLabelingPage component here */}
+                       
+                          <RoleGuard allowedRoles={["Admin", "Agency"]}>
+                            <WhiteLabelingPage /> 
                           </RoleGuard>
-                        </AuthGuard>
+                      
                       }
                     />
 
@@ -145,11 +144,11 @@ export default function RootLayout() {
                     <Route
                       path="/admin"
                       element={
-                        <AuthGuard>
+                       
                           <RoleGuard allowedRoles={["Admin"]}>
-                            <AdminPage /> {/* Render the AdminPage here */}
+                            <AdminPage /> 
                           </RoleGuard>
-                        </AuthGuard>
+                        
                       }
                     />
 
@@ -157,11 +156,11 @@ export default function RootLayout() {
                     <Route
                       path="/subaccounts"
                       element={
-                        <AuthGuard>
+                       
                           <RoleGuard allowedRoles={["Client"]}>
                             <ClientSubaccounts /> {/* Render the ClientSubaccounts here */}
                           </RoleGuard>
-                        </AuthGuard>
+                    
                       }
                     />
 
