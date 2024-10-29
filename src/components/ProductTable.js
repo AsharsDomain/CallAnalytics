@@ -14,12 +14,21 @@ import {
   Button,
   Spinner,
   Text,
-  Global,
+  VStack,
+  Stack,
+  useBreakpointValue,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import axios from "axios";
-import { Global as EmotionGlobal } from "@emotion/react"; // Renaming the Global import
+import { Global as EmotionGlobal } from "@emotion/react";
 
 export const ProductTable = () => {
   const [callData, setCallData] = useState([]);
@@ -29,11 +38,12 @@ export const ProductTable = () => {
   const [timeFilter, setTimeFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // You can set this to any number
+  const [itemsPerPage] = useState(10);
+  const [selectedCallId, setSelectedCallId] = useState(null);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,12 +59,10 @@ export const ProductTable = () => {
         });
 
         const data = response.data?.callLogs || [];
-        console.log("Call Logs Data:", data);
         setCallData(data);
         setFilteredData(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setError(error.message);
         setLoading(false);
       }
@@ -63,12 +71,11 @@ export const ProductTable = () => {
   }, []);
 
   const sortData = (data, sortBy, sortOrder) => {
-    const sortedData = [...data].sort((a, b) => {
+    return [...data].sort((a, b) => {
       if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
       if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
       return 0;
     });
-    return sortedData;
   };
 
   const filterData = (data, timeFilter) => {
@@ -110,27 +117,24 @@ export const ProductTable = () => {
     navigate(`/call/${call.id}`, { state: { callDetails: call } });
   };
 
-  // Get current data for the page
+  const handleShowFullId = (callId) => {
+    setSelectedCallId(callId);
+    onOpen();
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
   const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
-  if (loading) {
-    return <Spinner size="xl" />;
-  }
-
-  if (error) {
-    return <Text color="red.500">Error: {error}</Text>;
-  }
+  if (loading) return <Spinner size="xl" />;
+  if (error) return <Text color="red.500">Error: {error}</Text>;
 
   return (
     <>
-      {/* Google Fonts Import */}
       <EmotionGlobal
         styles={`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500&display=swap');
@@ -160,18 +164,39 @@ export const ProductTable = () => {
           <Button onClick={handleExportExcel} colorScheme="blue">Export Excel</Button>
         </HStack>
 
-        {/* Make the table horizontally scrollable */}
-        <Box overflowX="auto">
+        {isMobile ? (
+          <VStack spacing={4} align="stretch">
+            {currentData.map((call) => (
+              <Box key={call.id} p={4} border="1px" borderColor="gray.600" borderRadius="md" bg="gray.800">
+                {Object.entries({
+                  "Call ID": (
+                    <>
+                      {call.id.slice(0, 8)}...
+                      <Button size="xs" variant="link" onClick={() => handleShowFullId(call.id)}>
+                        View Full
+                      </Button>
+                    </>
+                  ),
+                  Date: new Date(call.startedat).toLocaleDateString(),
+                  Time: new Date(call.startedat).toLocaleTimeString(),
+                  "Duration (mins)": parseFloat(call.duration_in_minutes).toFixed(2),
+                  Cost: `${call.cost} $`,
+                  Outcome: call.endedreason,
+                }).map(([label, value]) => (
+                  <HStack key={label} justify="space-between">
+                    <Text fontWeight="500" color="gray.400">{label}</Text>
+                    <Text color="white">{value}</Text>
+                  </HStack>
+                ))}
+                <Button size="sm" mt={2} colorScheme="blue" onClick={() => handleViewDetails(call)}>
+                  Details
+                </Button>
+              </Box>
+            ))}
+          </VStack>
+        ) : (
           <TableContainer>
-            <Table
-              variant="striped"
-              colorScheme="blackAlpha"
-              size={{ base: "sm", md: "md" }} // Adjust size for responsiveness
-              border="1px"
-              borderColor="black"
-              bg="black"
-              color="white"
-            >
+            <Table variant="striped" colorScheme="blackAlpha" border="1px" borderColor="black" bg="black" color="white">
               <Thead>
                 <Tr>
                   <Th color="rgba(255,255,255,0.9)" fontWeight="500" fontFamily="Inter">Call ID</Th>
@@ -184,51 +209,54 @@ export const ProductTable = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {Array.isArray(currentData) && currentData.length > 0 ? (
-                  currentData.map((call, index) => (
-                    <Tr key={index} _hover={{ bg: "blackAlpha.700" }} transition="0.2s ease-out">
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.id}</Td>
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.startedat).toLocaleDateString()}</Td>
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{new Date(call.startedat).toLocaleTimeString()}</Td>
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.duration_in_minutes}</Td>
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.cost} Rs</Td>
-                      <Td color="white" fontWeight="400" fontFamily="Inter" _hover={{ color: "blue.500" }} transition="color 0.2s">{call.endedreason}</Td>
-                      <Td>
-                        <Button size="sm" onClick={() => handleViewDetails(call)} colorScheme="blue">Details</Button>
-                      </Td>
-                    </Tr>
-                  ))
-                ) : (
-                  <Tr>
-                    <Td colSpan={7} textAlign="center">No call logs found</Td>
+                {currentData.map((call, index) => (
+                  <Tr key={index} _hover={{ bg: "blackAlpha.700" }}>
+                    <Td>
+                      {call.id.slice(0, 8)}...
+                      <Button size="xs" variant="link" onClick={() => handleShowFullId(call.id)}>
+                        View Full
+                      </Button>
+                    </Td>
+                    <Td>{new Date(call.startedat).toLocaleDateString()}</Td>
+                    <Td>{new Date(call.startedat).toLocaleTimeString()}</Td>
+                    <Td>{parseFloat(call.duration_in_minutes).toFixed(2)}</Td>
+                    <Td>{call.cost} $</Td>
+                    <Td>{call.endedreason}</Td>
+                    <Td>
+                      <Button size="sm" onClick={() => handleViewDetails(call)} colorScheme="blue">
+                        Details
+                      </Button>
+                    </Td>
                   </Tr>
-                )}
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
-        </Box>
+        )}
 
-        {/* Pagination Controls */}
         <HStack justifyContent="space-between" mt={4}>
-          <Button
-            onClick={prevPage}
-            isDisabled={currentPage === 1}
-            colorScheme="blue"
-          >
+          <Button onClick={prevPage} isDisabled={currentPage === 1} colorScheme="blue">
             Previous
           </Button>
           <Text>
             Page {currentPage} of {totalPages}
           </Text>
-          <Button
-            onClick={nextPage}
-            isDisabled={currentPage === totalPages}
-            colorScheme="blue"
-          >
+          <Button onClick={nextPage} isDisabled={currentPage === totalPages} colorScheme="blue">
             Next
           </Button>
         </HStack>
       </Box>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent bg="black">
+          <ModalHeader color="blue">Full Call ID</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text fontWeight="bold">{selectedCallId}</Text>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

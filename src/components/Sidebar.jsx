@@ -62,13 +62,17 @@ const Sidebar = () => {
     const savedLogoSize = localStorage.getItem("logoSize");
     setLogoUrl(savedLogo);
     setHeadingText(savedHeading);
-    setLogoSize(savedLogoSize); 
+    setLogoSize(savedLogoSize);
   }, []);
 
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="anonymous"
+      />
 
       <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap"
@@ -93,7 +97,11 @@ const Sidebar = () => {
       >
         <Stack spacing={6}>
           {/* Sidebar Header with Logo and Collapse Toggle */}
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             {/* Conditionally render the logo and heading based on sidebar state */}
             {!isCollapsed && logoUrl && (
               <Image
@@ -116,12 +124,20 @@ const Sidebar = () => {
               _hover={{ bg: "rgba(10, 10, 25, 0.9)", color: hoverColor }}
               size="lg"
               aria-label="Toggle Collapse"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              m="0 auto"
             />
           </Box>
 
           {/* Mobile Menu Toggle Button */}
           <Box display={{ base: "block", md: "none" }} alignItems="center">
-            <Stack direction="row" alignItems="center" justifyContent="flex-start">
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
               <IconButton
                 aria-label="Toggle Sidebar"
                 icon={isOpen ? <HiX /> : <HiMenu />}
@@ -146,7 +162,11 @@ const Sidebar = () => {
               fontSize="lg"
               display="flex"
               alignItems="center"
-              _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+              justifyContent={isCollapsed ? "center" : "flex-start"}
+              _hover={{
+                fontSize: isCollapsed ? "lg" : "xl",
+                color: hoverColor,
+              }}
               transition={transitionStyle}
               fontWeight={500}
             >
@@ -170,7 +190,11 @@ const Sidebar = () => {
                 fontSize="lg"
                 display="flex"
                 alignItems="center"
-                _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+                justifyContent={isCollapsed ? "center" : "flex-start"}
+                _hover={{
+                  fontSize: isCollapsed ? "lg" : "xl",
+                  color: hoverColor,
+                }}
                 transition={transitionStyle}
                 fontWeight={500}
               >
@@ -195,7 +219,11 @@ const Sidebar = () => {
                 fontSize="lg"
                 display="flex"
                 alignItems="center"
-                _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+                justifyContent={isCollapsed ? "center" : "flex-start"}
+                _hover={{
+                  fontSize: isCollapsed ? "lg" : "xl",
+                  color: hoverColor,
+                }}
                 transition={transitionStyle}
                 fontWeight={500}
               >
@@ -219,7 +247,11 @@ const Sidebar = () => {
               fontSize="lg"
               display="flex"
               alignItems="center"
-              _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+              justifyContent={isCollapsed ? "center" : "flex-start"}
+              _hover={{
+                fontSize: isCollapsed ? "lg" : "xl",
+                color: hoverColor,
+              }}
               transition={transitionStyle}
               fontWeight={500}
             >
@@ -242,7 +274,11 @@ const Sidebar = () => {
               fontSize="lg"
               display="flex"
               alignItems="center"
-              _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+              justifyContent={isCollapsed ? "center" : "flex-start"}
+              _hover={{
+                fontSize: isCollapsed ? "lg" : "xl",
+                color: hoverColor,
+              }}
               transition={transitionStyle}
               fontWeight={500}
             >
@@ -265,7 +301,11 @@ const Sidebar = () => {
               fontSize="lg"
               display="flex"
               alignItems="center"
-              _hover={{ fontSize: isCollapsed ? "lg" : "xl", color: hoverColor }}
+              justifyContent={isCollapsed ? "center" : "flex-start"}
+              _hover={{
+                fontSize: isCollapsed ? "lg" : "xl",
+                color: hoverColor,
+              }}
               transition={transitionStyle}
               fontWeight={500}
             >
@@ -290,23 +330,36 @@ const Sidebar = () => {
               fontSize="lg"
               display="flex"
               alignItems="center"
+              justifyContent={isCollapsed ? "center" : "flex-start"} // Center aligns content in collapsed mode
               _hover={{ color: hoverColor, transform: "scale(1.05)" }}
               transition={transitionStyle}
               cursor="pointer"
               fontWeight={500}
+              width="100%" // Ensures full width for alignment
             >
-              <Icon
-                as={MdOutlineAdminPanelSettings}
-                color={defaultColor}
-                boxSize={iconSize}
-                mr={isCollapsed ? 0 : 2}
-                _hover={{
-                  color: hoverColor,
-                  transition: transitionStyle,
-                }}
-              />
-              {!isCollapsed && "Role"}
-              {!isCollapsed && <Icon as={MdArrowDropDown} color={defaultColor} />}
+              <Stack
+                direction="row"
+                spacing={isCollapsed ? 0 : 2}
+                alignItems="center"
+                justifyContent={isCollapsed ? "center" : "flex-start"}// Ensures content is centered in collapsed mode
+                width="100%" // Ensures full width for flex alignment
+              >
+                <Icon
+                  as={MdOutlineAdminPanelSettings}
+                  color={defaultColor}
+                  boxSize={iconSize}
+                  _hover={{
+                    color: hoverColor,
+                    transition: transitionStyle,
+                  }}
+                />
+                {!isCollapsed && (
+                  <Text color={hoverColor}>Role</Text> // Text element added for label
+                )}
+                {!isCollapsed && (
+                  <Icon as={MdArrowDropDown} color={hoverColor} />
+                )}
+              </Stack>
             </MenuButton>
             <MenuList bg="white" color="black">
               <MenuItem

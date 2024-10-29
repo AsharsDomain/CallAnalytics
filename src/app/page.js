@@ -17,11 +17,11 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [headingText, setHeadingText] = useState("");
-  const [primaryColor, setPrimaryColor] = useState(() => {
-    return localStorage.getItem("primaryColor") || "#00BFFF";
-  });
+  const [primaryColor, setPrimaryColor] = useState(
+    () => localStorage.getItem("primaryColor") || "#00BFFF"
+  );
 
-  const cardBg = "black";
+  const cardBg = primaryColor;
   const borderColor = "gray.700";
   const fontColor = "white";
   const headingColor = "#1662D4";
@@ -47,8 +47,21 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
 
+    const handleColorChange = () => {
+      const color = localStorage.getItem("primaryColor") || "#00BFFF";
+      setPrimaryColor(color); // Update state instead of redeclaring
+    };
+
+    window.addEventListener("storage", handleColorChange);
+
+    return () => {
+      window.removeEventListener("storage", handleColorChange);
+    };
+  }, []);
+ 
+
+  
   if (isLoading) return <Text color={fontColor}>Loading...</Text>;
   if (error) return <Text color={fontColor}>Error: {error.message}</Text>;
 
@@ -194,7 +207,7 @@ export default function Home() {
                 gap={8}
                 alignItems="center"
               >
-                <Box width={{ base: "100%", md: "80%" }} mx="auto">
+                <Box width={{ base: "100%", md: "85%" }} mx="auto">
                   <LineChartComponent callVolumeTrends={callVolumeTrends} />
                 </Box>
                 <Box width={{ base: "100%", md: "60%" }} mx="auto">
