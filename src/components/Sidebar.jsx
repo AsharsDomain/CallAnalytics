@@ -27,6 +27,7 @@ import { useState, useContext, useEffect } from "react";
 import { MdOutlineSort } from "react-icons/md";
 import { RoleContext } from "@/components/RoleContext";
 import { CgOrganisation } from "react-icons/cg";
+import { LuFiles } from "react-icons/lu";
 
 const Sidebar = () => {
   const hoverColor = "#ffffff";
@@ -320,6 +321,33 @@ const Sidebar = () => {
                 }}
               />
               {!isCollapsed && "Settings"}
+            </Text>
+          </Link>
+
+          <Link to="/knowledge-base">
+            <Text
+              fontSize="lg"
+              display="flex"
+              alignItems="center"
+              justifyContent={isCollapsed ? "center" : "flex-start"}
+              _hover={{
+                fontSize: isCollapsed ? "lg" : "xl",
+                color: hoverColor,
+              }}
+              transition={transitionStyle}
+              fontWeight={500}
+            >
+              <Icon
+                as={LuFiles}
+                color={defaultColor}
+                boxSize={iconSize}
+                mr={isCollapsed ? 0 : 2}
+                _hover={{
+                  color: hoverColor,
+                  transition: transitionStyle,
+                }}
+              />
+              {!isCollapsed && "Files"}
             </Text>
           </Link>
 

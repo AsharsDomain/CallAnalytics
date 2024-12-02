@@ -1,7 +1,7 @@
-import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
-import { useEffect, useState } from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
+import { useEffect, useState } from "react";
+import { Box, Text } from "@chakra-ui/react";
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -21,12 +21,11 @@ const PieChartComponent = ({ callOutcomes }) => {
     labels: pieData.labels,
     datasets: [
       {
-        label: 'Call Outcomes',
         data: pieData.data,
         backgroundColor: [
-          '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf',
+          "#ff6384", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff", "#ff9f40", "#c9cbcf",
         ],
-        borderColor: '#fff',
+        borderColor: "#fff",
         borderWidth: 2,
       },
     ],
@@ -39,16 +38,14 @@ const PieChartComponent = ({ callOutcomes }) => {
         callbacks: {
           label: (context) => `${context.label}: ${context.raw}`,
         },
-        titleColor: '#FF9A00',
-        bodyColor: '#FF9A00',
+        titleColor: "#FF9A00",
+        bodyColor: "#FF9A00",
       },
       legend: {
-        labels: {
-          color: 'white',
-        },
+        display: false, // Hides the legend
       },
     },
-    cutout: '70%',
+    cutout: "70%",
   };
 
   return (

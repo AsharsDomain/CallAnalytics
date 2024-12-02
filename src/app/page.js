@@ -59,9 +59,7 @@ export default function Home() {
       window.removeEventListener("storage", handleColorChange);
     };
   }, []);
- 
 
-  
   if (isLoading) return <Text color={fontColor}>Loading...</Text>;
   if (error) return <Text color={fontColor}>Error: {error.message}</Text>;
 
@@ -200,7 +198,7 @@ export default function Home() {
                 mb={6}
                 color={headingColor}
               >
-                Graph Overview
+                
               </Text>
               <Grid
                 templateColumns={{ base: "min(600px, 100%)", md: "1fr 1fr" }}
@@ -208,9 +206,25 @@ export default function Home() {
                 alignItems="center"
               >
                 <Box width={{ base: "100%", md: "85%" }} mx="auto">
+                  <Text
+                    fontSize={{ base: "lg", md: "xl" }}
+                    fontWeight="bold"
+                    color={headingColor}
+                    mb={4} // Add margin to separate it from the chart
+                  >
+                    Call Volume Trends
+                  </Text>
                   <LineChartComponent callVolumeTrends={callVolumeTrends} />
                 </Box>
-                <Box width={{ base: "100%", md: "60%" }} mx="auto">
+                <Box width={{ base: "100%", md: "40%" }} mx="auto">
+                  <Text
+                    fontSize={{ base: "lg", md: "xl" }}
+                    fontWeight="bold"
+                    color={headingColor}
+                    mb={4} // Add margin to separate it from the chart
+                  >
+                   Outcome Trends
+                  </Text>
                   <PieChartComponent callOutcomes={data?.getCallOutcomes} />
                 </Box>
               </Grid>

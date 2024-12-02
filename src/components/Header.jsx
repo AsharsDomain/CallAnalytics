@@ -31,8 +31,9 @@ import { FaUserFriends } from "react-icons/fa";
 import { CgOrganisation } from "react-icons/cg";
 import { MdOutlineWarningAmber } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import { useAlerts } from "./alertsContext";
 
-const Header = ({ alerts = [] }) => {
+const Header = () => {
   const fontColor = "#1662D4";
   const hoverColor = "#ffffff";
   const bgColor = "black";
@@ -41,6 +42,7 @@ const Header = ({ alerts = [] }) => {
   const [isMobile] = useMediaQuery("(max-width: 768px)");
   const { role, changeRole } = useContext(RoleContext);
   const [logoUrl, setLogoUrl] = useState("");
+  const { alerts } = useAlerts();
   const navigate = useNavigate();
 
   useEffect(() => {

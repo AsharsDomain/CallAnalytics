@@ -5,6 +5,7 @@ import { useState } from "react";
 import Sidebar from "@/components/Sidebar"; // Adjust the import path as necessary
 import Header from "@/components/Header"; // Import your Header component
 import { FaUser, FaLock, FaBell, FaGlobe } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
 
 // Import Google Fonts
 const interFont = {
@@ -12,6 +13,7 @@ const interFont = {
 };
 
 const SettingsPage = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
@@ -56,6 +58,10 @@ const SettingsPage = () => {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+  };
+
+  const navigateToKnowledgeBase = () => {
+    navigate("/knowledge-base"); // Navigate to the knowledge base page
   };
 
   return (
@@ -173,7 +179,7 @@ const SettingsPage = () => {
                       colorScheme="blue"
                       color="white"
                     >
-                      SMS Notifications
+                      Slack Notifications
                     </Checkbox>
                   </Stack>
                 </Box>
@@ -281,6 +287,15 @@ const SettingsPage = () => {
                     </Button>
                   </Stack>
                 </Box>
+
+                <Button
+                  onClick={navigateToKnowledgeBase}
+                  colorScheme="teal"
+                  w="full"
+                  mt={4}
+                >
+                  Go to Knowledge Base
+                </Button>
 
                 <Button
                   onClick={handleSaveProfile}
