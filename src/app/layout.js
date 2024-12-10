@@ -22,6 +22,7 @@ import AuthContent from "@/components/AuthContent";
 import { RoleProvider } from "@/components/RoleContext";
 import { AlertsProvider } from "@/components/alertsContext";
 import KnowledgeBase from "@/components/KnowledgeBase";
+import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 
 const clerkFrontendApi = 'https://humane-shrew-49.clerk.accounts.dev';
 const publishableKey = 'pk_test_aHVtYW5lLXNocmV3LTQ5LmNsZXJrLmFjY291bnRzLmRldiQ';
@@ -46,23 +47,69 @@ export default function RootLayout() {
         <ClerkProvider frontendApi={clerkFrontendApi} publishableKey={publishableKey}>
           <ChakraProvider theme={theme}>
             <RoleProvider>
-              <AlertsProvider> {/* Wrap the entire application with AlertsProvider */}
+              <AlertsProvider>
                 <BrowserRouter>
                   <Refine routerProvider={routerProvider}>
                     <Routes>
+                      {/* Redirect based on authentication state */}
+                      <Route
+                        path="/"
+                        element={
+                          <>
+                            <SignedIn>
+                              <Home />
+                            </SignedIn>
+                            <SignedOut>
+                              <Navigate to="/login" />
+                            </SignedOut>
+                          </>
+                        }
+                      />
+                      {/* Authentication Pages */}
                       <Route path="/login" element={<AuthContent />} />
                       <Route path="/unauthorized" element={<Unauthorized />} />
-                      <Route path="/" element={<Home />} />
+
+                      {/* Protected and other routes */}
                       <Route path="/call/:id" element={<CallDetails />} />
                       <Route path="/settings" element={<MainComponent />} />
                       <Route path="/knowledge-base" element={<KnowledgeBase />} />
                       <Route path="/products" element={<ProductTable />} />
                       <Route path="/alerts" element={<AlertsPage />} />
-                      <Route path="/call-expense" element={<RoleGuard allowedRoles={["Admin", "Agency"]}><CallExpense /></RoleGuard>} />
+                      <Route
+                        path="/call-expense"
+                        element={
+                          <RoleGuard allowedRoles={["Admin", "Agency"]}>
+                            <CallExpense />
+                          </RoleGuard>
+                        }
+                      />
                       <Route path="/analytics" element={<AnalyticsPage />} />
-                      <Route path="/whitelabel" element={<RoleGuard allowedRoles={["Admin", "Agency"]}><WhiteLabelingPage /></RoleGuard>} />
-                      <Route path="/admin" element={<RoleGuard allowedRoles={["Admin"]}><AdminPage /></RoleGuard>} />
-                      <Route path="/subaccounts" element={<RoleGuard allowedRoles={["Client"]}><ClientSubaccounts /></RoleGuard>} />
+                      <Route
+                        path="/whitelabel"
+                        element={
+                          <RoleGuard allowedRoles={["Admin", "Agency"]}>
+                            <WhiteLabelingPage />
+                          </RoleGuard>
+                        }
+                      />
+                      <Route
+                        path="/admin"
+                        element={
+                          <RoleGuard allowedRoles={["Admin"]}>
+                            <AdminPage />
+                          </RoleGuard>
+                        }
+                      />
+                      <Route
+                        path="/subaccounts"
+                        element={
+                          <RoleGuard allowedRoles={["Client"]}>
+                            <ClientSubaccounts />
+                          </RoleGuard>
+                        }
+                      />
+
+                      {/* Fallback for unmatched routes */}
                       <Route path="*" element={<Navigate to="/login" />} />
                     </Routes>
                   </Refine>
@@ -75,3 +122,4 @@ export default function RootLayout() {
     </html>
   );
 }
+

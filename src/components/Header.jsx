@@ -32,6 +32,7 @@ import { CgOrganisation } from "react-icons/cg";
 import { MdOutlineWarningAmber } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { useAlerts } from "./alertsContext";
+import { useAuth } from "@clerk/clerk-react";
 
 const Header = () => {
   const fontColor = "#1662D4";
@@ -44,6 +45,7 @@ const Header = () => {
   const [logoUrl, setLogoUrl] = useState("");
   const { alerts } = useAlerts();
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   useEffect(() => {
     const savedLogoUrl = localStorage.getItem("logoUrl");
@@ -53,8 +55,12 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    alert("You have logged out!");
+    signOut(); // Logs the user out using Clerk's signOut function
+    navigate("/login"); // Redirect to the login page after logout
+    alert("You have logged out!"); // Optional: Notify the user about the logout
   };
+
+  
 
   const handleRoleSelection = (selectedRole) => {
     changeRole(selectedRole);

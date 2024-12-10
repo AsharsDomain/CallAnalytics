@@ -7,7 +7,7 @@ export const fetchCalls = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: "user_2nHekPnt5JHC1R2sn5Y1GygO4Id" }) // Pass the ID in the body as JSON
+      body: JSON.stringify({ id: userId }) // Pass the ID in the body as JSON
     });
     
     if (!response.ok) {
