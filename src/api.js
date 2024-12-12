@@ -1,18 +1,21 @@
-// src/app/api.js
-export const fetchCalls = async () => {
-  const userId = "user_2nHekPnt5JHC1R2sn5Y1GygO4Id"; // Pass the required user ID
+export const fetchCalls = async (userId) => {
+  if (!userId) {
+    throw new Error("User is not authenticated.");
+  }
+
   try {
     const response = await fetch('http://localhost:3000/api/analytics', {
-      method: 'POST', // or 'GET' depending on your API
+      method: 'POST', // Adjust method as per API requirements
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: userId }) // Pass the ID in the body as JSON
+      body: JSON.stringify({ id: userId }), // Pass the ID dynamically
     });
-    
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
+
     const data = await response.json();
     console.log(data);
     return data;
